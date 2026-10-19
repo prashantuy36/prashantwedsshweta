@@ -823,3 +823,7 @@ html:not(.deva) .std__eyebrow { font-family: var(--f-caps); letter-spacing: .26e
   .pair { will-change: transform, opacity; }
   .mandap3d { will-change: opacity, transform; }
 }
+/* mandap fades in with opacity only on phones (cheapest for the GPU) */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .mandap3d { transform: translate(-50%, 0) !important; transition: opacity 1.1s ease .15s !important; }
+}

@@ -1,6 +1,6 @@
 # Shubh Vivah: Wedding Invitation Website (final)
 
-Painted Ganga storybook with the cartoon couple, a 3D mandap on the save-the-date scene, sun and moon, and auto-scroll.
+Painted Ganga storybook with the cartoon couple, a 3D mandap on the save-the-date scene, sun and moon.
 
 ## 1. Fill in your details: `wedding.json`
 Everything you can change is in **one file: `wedding.json`**. Open it in any text editor (TextEdit works; VS Code is nicer) and replace the example text.
@@ -20,7 +20,6 @@ What's in it, top to bottom:
 | Things to know | weather, stay, travel, parking and similar notes |
 | Families | each family's kids' line, "With best compliments from" names, and sender's address and phone numbers |
 | **Music** | `"music": "assets/music/song.mp3"` is the path to your song |
-| Auto-scroll | on/off, seconds to wait, speed |
 | Website words | headings and buttons (rarely needed) |
 
 ## 2. Add your song (and optional event photos)

@@ -9,8 +9,9 @@ window.Mandap = (function () {
   function create(canvas) {
     if (!supported()) return null;
     const T = THREE, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    const phone = matchMedia("(hover: none) and (pointer: coarse)").matches || innerWidth <= 760;
+    const renderer = new T.WebGLRenderer({ canvas, antialias: !phone, alpha: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, phone ? 1.5 : 2));
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -96,9 +97,10 @@ window.Mandap = (function () {
     const fl = new T.PointLight(0xffa860, 3, 14, 2); fl.position.set(0, 2.2, 2.5); scene.add(fl);
     const bl = new T.PointLight(0xff7aa0, 2, 12, 2); bl.position.set(0, 3, -2.5); scene.add(bl);
 
-    let active = false, raf = 0, t0 = performance.now();
-    function size() {
-      const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
+    let active = false, raf = 0, t0 = performance.now(), lastW = 0, lastH = 0, lastFrame = 0, warmed = false;
+    function size() {   // only resize when the canvas really changed size (resizing re-creates the drawing buffer and stutters)
+      const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h || (w === lastW && h === lastH)) return;
+      lastW = w; lastH = h;
       renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
     }
     addEventListener("resize", size);
@@ -117,13 +119,19 @@ window.Mandap = (function () {
       }
       renderer.render(scene, camera);
     }
-    function loop() { if (!active) return; draw(); raf = requestAnimationFrame(loop); }
+    function loop(t) {
+      if (!active) return;
+      raf = requestAnimationFrame(loop);
+      if (phone && t - lastFrame < 31) return;   // ~30 fps on phones keeps scrolling smooth
+      lastFrame = t; draw();
+    }
     return {
       setActive(on) {
         if (on === active) return; active = on;
         if (on) { size(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); } else cancelAnimationFrame(raf);
       },
-      draw() { size(); draw(); }
+      draw() { size(); draw(); },
+      warm() { if (warmed) return; warmed = true; size(); draw(); if (renderer.compile) renderer.compile(scene, camera); }
     };
   }
   return { create, supported };

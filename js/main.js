@@ -259,6 +259,8 @@
       img.src = src;
     });
     const mandap = window.Mandap ? window.Mandap.create($("#mandap3d")) : null;
+    const PHONE = matchMedia("(hover: none) and (pointer: coarse)").matches || innerWidth <= 760;
+    let mandapTimer = 0;
     if (mandap) stage.classList.add("has-mandap");
     const POSES = ["pose-hold", "pose-namaste", "pose-hold pose-wave-g", "pose-hold pose-wave-b", "pose-hold"];
     let current = -1;
@@ -270,7 +272,12 @@
       $$("button", pager).forEach((b, k) => b.classList.toggle("on", k === i));
       artImgs.forEach((img, k) => img && img.classList.toggle("on", k === i && artOK[k]));
       stage.classList.toggle("has-art", !!artOK[i]);
-      if (mandap) mandap.setActive(i === N - 1);
+      if (mandap) {
+        clearTimeout(mandapTimer);
+        if (i === N - 1) mandapTimer = setTimeout(() => mandap.setActive(true), PHONE ? 650 : 0);  // on phones, let the sky change first
+        else mandap.setActive(false);
+        if (i === N - 2) mandap.warm();      // get the 3D mandap ready one scene early
+      }
       // the couple changes pose with each scene, with a little hop
       const pair = $("#pair");
       pair.className = "pair " + (POSES[i] || "pose-hold");
@@ -425,7 +432,7 @@
       opening.classList.add("open");
       setTimeout(() => opening.classList.add("gone"), 2100);
       // draw the 3D mandap once in the background so it doesn't stutter when the save-the-date scene arrives
-      if (mandap) setTimeout(() => { try { mandap.draw(); } catch (e) {} }, 2400);
+      if (mandap) setTimeout(() => { try { mandap.warm(); } catch (e) {} }, 2400);
       if (musicOK) audio.play().then(() => setPlaying(true)).catch(() => {});
     }
     if (resume) { open(true); requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, resume.y || 0); }); }
@@ -463,57 +470,5 @@
       dockLinks.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === `#${key}`));
     }), { rootMargin: "-45% 0px -50% 0px" });
     $$("main > section").forEach((s) => io.observe(s));
-
-    /* ---------- auto-play: if the guest stops scrolling, the invite moves on by itself ---------- */
-    (function autoplay() {
-      const AP = BASE.autoplay || {};
-      if (AP.enabled === false) return;
-      const phone = matchMedia("(hover: none) and (pointer: coarse)").matches || innerWidth <= 760;
-      if (phone && AP.onPhones === false) return;   // phones scroll themselves smoothly; auto-scroll can be switched on in wedding.json
-      const IDLE = (+AP.waitSeconds || 5) * 1000;   // ms without touching before auto-play starts (also the pause on each scene)
-      const SPEED = +AP.scrollSpeed || 42;            // px per second for the gentle scroll after the story
-      const root = document.documentElement;
-      let last = performance.now(), anim = null, prevT = performance.now();
-      const pill = el("div", "autoplay", "<i></i>" + esc(tr("auto")));
-      pill.setAttribute("aria-live", "polite");
-      document.body.appendChild(pill);
-      const setAuto = (on) => pill.classList.toggle("on", on);
-      const takeOver = () => {
-        last = performance.now();
-        if (anim) { cancelAnimationFrame(anim); anim = null; }
-        setAuto(false);
-      };
-      ["wheel", "touchstart", "keydown", "pointerdown"].forEach((ev) => addEventListener(ev, takeOver, { passive: true }));
-      const go = (y) => { root.style.scrollBehavior = "auto"; scrollTo(0, y); };
-      function glide(to, ms) {
-        const from = scrollY, t0 = performance.now();
-        const step = (t) => {
-          const k = Math.min(1, (t - t0) / ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-          go(from + (to - from) * e);
-          if (k < 1) anim = requestAnimationFrame(step); else { anim = null; last = performance.now(); }
-        };
-        anim = requestAnimationFrame(step);
-      }
-      function tick(t) {
-        requestAnimationFrame(tick);
-        const dt = Math.min(.1, (t - prevT) / 1000); prevT = t;
-        const ready = !document.body.classList.contains("locked") && !document.hidden && $("#lightbox").hidden;
-        if (!ready) { last = t; setAuto(false); return; }
-        if (anim || t - last < IDLE) return;
-        const total = story.offsetHeight - innerHeight, storyEnd = story.offsetTop + total;
-        if (scrollY < storyEnd - 4) {
-          // inside the story: step to the next scene and pause there
-          setAuto(true);
-          const next = current + 1;
-          const to = next < N ? story.offsetTop + (next + .5) / N * total : storyEnd + innerHeight * .9;
-          glide(Math.min(to, root.scrollHeight - innerHeight), reduce ? 1 : 1700);
-        } else if (scrollY + innerHeight < root.scrollHeight - 2) {
-          // after the story: a slow, steady scroll through the rest of the invite
-          setAuto(true);
-          go(scrollY + SPEED * dt);
-        } else setAuto(false);
-      }
-      requestAnimationFrame(tick);
-    })();
   });
 })();
