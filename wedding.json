@@ -1,0 +1,301 @@
+{
+  "_readme": [
+    "This is the ONLY file you need to edit. Change the text between the quotes and save.",
+    "Keep the quotes, commas and brackets exactly as they are. Check the file at https://jsonlint.com if the site stops loading.",
+    "Photos and music: put the files in the assets folder and write their path here (for example assets/music/song.mp3).",
+    "Dates: weddingDate and each event start/end use the format 2027-02-14T19:30:00+05:30 (+05:30 = India time).",
+    "To preview on your Mac, double-click preview.command (see README.md)."
+  ],
+  "_1": "==================== THE COUPLE ====================",
+  "groom": {
+    "name": "Prashant",
+    "fullName": "Chi. Prashant Upadhyay",
+    "parents": "Shri Manoj Upadhyay & Smt. Manju Upadhyay",
+    "relation": "Suputra (son) of",
+    "from": "Kolkata, West Bengal"
+  },
+  "bride": {
+    "name": "Shweta",
+    "fullName": "Ayu. Shweta Choudhary",
+    "parents": "Shri Prabhunath Choudhary & Smt. Anu Choudhary",
+    "relation": "Suputri (daughter) of",
+    "from": "Sonari, Jamshedpur, Jharkhand"
+  },
+  "_2": "==================== DATE & PLACE ====================  weddingDate drives the countdown.",
+  "weddingDate": "2026-11-30T19:30:00+05:30",
+  "dateText": "Monday, 30 November 2026",
+  "dateShort": "30 · 11 · 2026",
+  "city": "Jamshedpur",
+  "hashtag": "",
+  "_3": "==================== INVITATION WORDING ====================",
+  "mantra": "॥ श्री गणेशाय नमः ॥",
+  "shloka": "वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ । निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥",
+  "blessingsTitle": "With the divine blessings of",
+  "blessings": [
+    "Shri Ram Naresh Upadhyay & Smt. Raj Mukhi Upadhyay",
+    "Late Shri Yadupati Choudhary & Late Smt. Bhagwati Devi"
+  ],
+  "inviteLine": "We cordially invite you and your family to grace the auspicious occasion of the marriage of",
+  "closingLine": "Your presence and blessings will make our celebration complete.",
+  "_4": "==================== EVENTS ====================  time: shown on the card. start/end: used for 'Add to calendar' (India time). map: Google Maps link (leave \"\" to hide Directions). note: small line under the venue, e.g. 'Exact venue to be shared soon' (\"\" to hide). dress: colour/dress code (\"\" to hide). hi: small Hindi name above the event (\"\" to hide). side: groom / bride / both (with ?side=groom in the link, guests see only those events). icon: thali, bowl, leaf, dhol, agni, chandelier. tone: card colour.",
+  "events": [
+    {
+      "id": "tilak",
+      "name": "Shubh Tilak",
+      "hi": "शुभ तिलक",
+      "date": "Tuesday, 24 November 2026",
+      "time": "All day",
+      "start": "2026-11-24T10:00:00+05:30",
+      "end": "2026-11-24T22:00:00+05:30",
+      "venue": "Deepali Banquet",
+      "address": "26/3, Northern Ave, Paikpara, Kolkata, West Bengal 700030",
+      "note": "",
+      "map": "https://maps.app.goo.gl/z1Rc5CofubTMqoC2A",
+      "dress": "",
+      "side": "both",
+      "icon": "thali",
+      "tone": "#C9573A",
+      "image": "assets/images/event-tilak.jpg"
+    },
+    {
+      "id": "haldi",
+      "name": "Mandapachhadan, Matkor & Haldi Kalash",
+      "hi": "मण्डपाच्छादन · मटकोर · हल्दी कलश",
+      "date": "Friday, 27 November 2026",
+      "time": "From 12:30 PM",
+      "start": "2026-11-27T12:30:00+05:30",
+      "end": "2026-11-27T18:00:00+05:30",
+      "venue": "Sonari, Jamshedpur",
+      "address": "",
+      "note": "Exact venue to be shared soon",
+      "map": "",
+      "dress": "",
+      "side": "both",
+      "icon": "bowl",
+      "tone": "#E2A21B",
+      "image": "assets/images/event-haldi.jpg"
+    },
+    {
+      "id": "sangeet",
+      "name": "Mehandi & Sangeet",
+      "hi": "मेहंदी एवं संगीत",
+      "date": "Saturday, 28 November 2026",
+      "time": "From 7:30 PM",
+      "start": "2026-11-28T19:30:00+05:30",
+      "end": "2026-11-28T23:30:00+05:30",
+      "venue": "Sonari, Jamshedpur",
+      "address": "",
+      "note": "Exact venue to be shared soon",
+      "map": "",
+      "dress": "",
+      "side": "both",
+      "icon": "leaf",
+      "tone": "#4E8A3A",
+      "image": "assets/images/event-sangeet.jpg"
+    },
+    {
+      "id": "vivah",
+      "name": "Wedding & Reception",
+      "hi": "विवाह एवं आशीर्वाद समारोह",
+      "date": "Monday, 30 November 2026",
+      "time": "From 7:30 PM",
+      "start": "2026-11-30T19:30:00+05:30",
+      "end": "2026-12-01T04:00:00+05:30",
+      "venue": "Beldih Club",
+      "address": "Northern Town, Jamshedpur, Jharkhand 831001",
+      "note": "",
+      "map": "https://maps.app.goo.gl/6ciyGWrWtT2pNdHF7",
+      "dress": "",
+      "side": "both",
+      "icon": "agni",
+      "tone": "#9E1B1B",
+      "image": "assets/images/event-vivah.jpg"
+    },
+    {
+      "id": "reception",
+      "name": "Reception",
+      "hi": "प्रीतिभोज",
+      "date": "Friday, 11 December 2026",
+      "time": "Time to be shared soon",
+      "start": "2026-12-11T19:00:00+05:30",
+      "end": "2026-12-11T23:00:00+05:30",
+      "venue": "Kolkata",
+      "address": "",
+      "note": "Exact venue to be shared soon",
+      "map": "",
+      "dress": "",
+      "side": "both",
+      "icon": "chandelier",
+      "tone": "#2F4E8C",
+      "image": "assets/images/event-reception.jpg"
+    }
+  ],
+  "_6": "==================== THINGS TO KNOW ====================  icon: weather, dress, stay, travel, parking, gift.",
+  "thingsToKnow": [
+    {
+      "icon": "travel",
+      "title": "Two cities, one celebration",
+      "text": "The Tilak and the 11 December reception are in Kolkata. The Haldi, Mehandi & Sangeet and the wedding are in Jamshedpur."
+    },
+    {
+      "icon": "weather",
+      "title": "Weather",
+      "text": "Late November evenings in Jamshedpur and Kolkata are pleasantly cool. Carry a light shawl or jacket for the night functions."
+    },
+    {
+      "icon": "travel",
+      "title": "Getting to Jamshedpur",
+      "text": "Nearest railway station: Tatanagar Junction (TATA). Nearest airports: Birsa Munda Airport, Ranchi (about 3 hours by road) and Netaji Subhas Chandra Bose Airport, Kolkata."
+    },
+    {
+      "icon": "stay",
+      "title": "Your stay",
+      "text": "Coming from out of town? Please call us with your arrival details and we will help you settle in."
+    },
+    {
+      "icon": "gift",
+      "title": "Blessings",
+      "text": "Your presence and blessings are the only gift we wish for."
+    }
+  ],
+  "_7": "==================== FAMILIES ====================  Shown at the end of the invitation, one block per family: the kids' line, 'With best compliments from', and the sender's address. Phone numbers are not shown on the site: guests get 'Call' and 'Save contact' buttons (also in Things to Know).",
+  "families": [
+    {
+      "title": "The Upadhyay Family",
+      "side": "Groom's side",
+      "kidsLine": "Meri bhaiya ki shaadi mein zaroor aana",
+      "kidsFrom": "Aditya & Binit",
+      "complimentsFrom": [
+        "Manoj Upadhyay",
+        "Madan Upadhyay",
+        "Deepak Kumar Upadhyay",
+        "Binit Kumar Upadhyay",
+        "Aditya Raj Upadhyay"
+      ],
+      "sender": {
+        "name": "Manoj Upadhyay",
+        "role": "Groom's father",
+        "address": "119, B.K. Paul Avenue, Kolkata 700005",
+        "phones": [
+          "+91 94335 35750",
+          "+91 62900 51530"
+        ]
+      }
+    },
+    {
+      "title": "The Choudhary Family",
+      "side": "Bride's side",
+      "kidsLine": "Meri Bua ki shaadi mein zaroor aana",
+      "kidsFrom": "Mithi & Tantu",
+      "complimentsFrom": [
+        "Paras Nath Choudhary",
+        "Prem Nath Choudhary",
+        "Avinash Choudhary",
+        "Pankaj Kumar",
+        "Akash Choudhary",
+        "Vikash",
+        "Prakash",
+        "Samir",
+        "Akshat",
+        "Aarav",
+        "Keshav"
+      ],
+      "sender": {
+        "name": "Prabhu Nath Choudhary",
+        "role": "Bride's father",
+        "address": "E/312, A-Block, Khutadih, Sonari, Jamshedpur",
+        "phones": [
+          "+91 70049 20461",
+          "+91 96933 39901"
+        ]
+      }
+    }
+  ],
+  "_8": "==================== MUSIC ====================  Put your song in assets/music/ and write its path, e.g. assets/music/song.mp3 (mp3 or m4a). Leave \"\" for no music. It starts when the guest taps the seal; a button lets them pause it.",
+  "music": "assets/music/song.mp3",
+  "_9": "==================== AUTO-SCROLL ====================  If a guest stops scrolling for waitSeconds, the invitation moves on by itself. scrollSpeed = pixels per second after the story. enabled: false turns it off.",
+  "autoplay": {
+    "enabled": true,
+    "waitSeconds": 5,
+    "scrollSpeed": 42
+  },
+  "_10": "==================== OPTIONAL PAINTED PICTURES ====================  Leave as they are to keep the cartoon couple. If you add your own illustration files with these names, they replace the drawing in that scene.",
+  "art": {
+    "story": [
+      "assets/images/story-1-jaimala.png",
+      "assets/images/story-2-blessings.png",
+      "assets/images/story-3-groom.png",
+      "assets/images/story-4-bride.png",
+      "assets/images/story-5-together.png"
+    ],
+    "namaste": "assets/images/couple-namaste.png"
+  },
+  "_11": "==================== WEBSITE WORDS ====================  Headings, buttons and labels of the website. {g} {b} {guest} {n} {a} are filled in automatically. You rarely need to change these.",
+  "siteText": {
+    "en": {
+      "locale": "en-IN",
+      "dir": "ltr",
+      "deva": false,
+      "title": "{g} & {b} · Shubh Vivah",
+      "amp": "&",
+      "greet": "You are invited",
+      "greetGuest": "Dear {guest}, you are invited",
+      "hint": "Tap the seal to open",
+      "openAria": "Open the invitation",
+      "married": "We're getting married",
+      "turn": "Scroll to turn the page",
+      "with": "with",
+      "std": "Save the date",
+      "stdFor": "for the wedding of",
+      "scenes": [
+        "Shubh Vivah",
+        "Blessings",
+        "The groom",
+        "The bride",
+        "Save the date"
+      ],
+      "evHi": "शुभ कार्यक्रम",
+      "evTitle": "The Celebrations",
+      "evSub": "{n} celebrations · {a} to {b}",
+      "directions": "Directions",
+      "addCal": "Add to calendar",
+      "dress": "Dress",
+      "momHi": "हमारी यादें",
+      "momTitle": "Our Moments",
+      "addPhoto": "Add your photo",
+      "knowHi": "ध्यान दें",
+      "knowTitle": "Things to Know",
+      "knowSub": "A few notes for your journey to the wedding",
+      "help": "Need help on the way?",
+      "stampCountry": "भारत · SHUBH VIVAH",
+      "countHi": "शुभ घड़ी",
+      "countTitle": "The countdown begins",
+      "units": [
+        "Days",
+        "Hours",
+        "Minutes",
+        "Seconds"
+      ],
+      "done": "Just married. Thank you for your blessings",
+      "closeHi": "आपकी प्रतीक्षा में",
+      "closeTitle": "Awaiting your presence",
+      "darshan": "<span class=\"hindi\">दर्शनाभिलाषी</span> · Eager to see you",
+      "swagat": "<span class=\"hindi\">स्वागतकर्ता</span> · Welcomed by",
+      "dock": [
+        "Invite",
+        "Events",
+        "Info"
+      ],
+      "auto": "Auto-scrolling · touch or scroll to take over",
+      "music": "Play music",
+      "closePhoto": "Close photo",
+      "langBtn": "Change language",
+      "compliments": "With best compliments from",
+      "from": "from",
+      "sender": "Invitation from",
+      "call": "Call",
+      "callAlt": "2nd number",
+      "saveContact": "Save contact"
+    }
+  }
+}
