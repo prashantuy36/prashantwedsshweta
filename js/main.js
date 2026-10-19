@@ -419,10 +419,19 @@
     /* ---------- opening + music ---------- */
     const opening = $("#opening"), audio = $("#audio"), mBtn = $("#musicBtn");
     let musicOK = false;
-    if (C.music) {
+    // music: one path, or a list of songs. A random song is picked once per visit and kept
+    // for the whole visit (so changing language doesn't switch the song).
+    const songs = (Array.isArray(C.music) ? C.music : [C.music]).filter(Boolean);
+    if (songs.length) {
+      let pick = null;
+      try { pick = sessionStorage.getItem("invite-song"); } catch (e) {}
+      if (!songs.includes(pick)) {
+        pick = songs[Math.floor(Math.random() * songs.length)];
+        try { sessionStorage.setItem("invite-song", pick); } catch (e) {}
+      }
       audio.preload = "metadata";
       audio.addEventListener("loadedmetadata", () => { musicOK = true; mBtn.hidden = false; }, { once: true });
-      audio.src = C.music;
+      audio.src = pick;
     }
     const setPlaying = (on) => mBtn.setAttribute("aria-pressed", String(on));
     mBtn.addEventListener("click", () => {
