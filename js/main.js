@@ -324,8 +324,8 @@
     $$(".stop__img").forEach((slot) => {
       if (!slot.dataset.src) return;
       const img = new Image(); img.alt = ""; img.loading = "lazy";
-      img.onload = () => slot.classList.add("has-art");
-      img.src = slot.dataset.src; slot.appendChild(img);
+      img.onload = () => { slot.appendChild(img); slot.classList.add("has-art"); };   // missing photo = nothing added
+      img.src = slot.dataset.src;
     });
 
     const closeLb = () => ($("#lightbox").hidden = true);
@@ -372,8 +372,8 @@
     $$("[data-art]").forEach((slot) => {
       const src = C.art[slot.dataset.art]; if (!src) return;
       const img = new Image(); img.alt = "";
-      img.onload = () => slot.classList.add("has-art");
-      img.src = src; slot.prepend(img);
+      img.onload = () => { slot.prepend(img); slot.classList.add("has-art"); };
+      img.src = src;
     });
 
     /* ---------- falling petals ---------- */
