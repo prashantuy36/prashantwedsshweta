@@ -827,3 +827,11 @@ html:not(.deva) .std__eyebrow { font-family: var(--f-caps); letter-spacing: .26e
 @media (max-width: 760px), (hover: none) and (pointer: coarse) {
   .mandap3d { transform: translate(-50%, 0) !important; transition: opacity 1.1s ease .15s !important; }
 }
+
+/* the last story scene (save the date + mandap) gets extra scroll room, and the mandap arrives as gently as the other scenes */
+.story { height: calc((var(--n) + .6) * 100svh); }
+.mandap3d { transition: opacity 1.6s ease .25s, transform 1.8s cubic-bezier(.25,.7,.3,1) .25s !important; }
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .mandap3d { transform: translate(-50%, 24px) !important; transition: opacity 1.6s ease .2s, transform 1.8s cubic-bezier(.25,.7,.3,1) .2s !important; }
+  .stage[data-s="4"] .mandap3d { transform: translate(-50%, 0) !important; }
+}

@@ -242,11 +242,13 @@
     /* ---------- the story: scenes change as you scroll ---------- */
     const story = $(".story"), stage = $("#stage"), scenes = $$(".scene"), N = scenes.length;
     const pager = $("#pager");
+    const LAST = 1.6;   // the save-the-date / mandap scene stays on screen 1.6x as long as the others
+    const sceneLen = () => (story.offsetHeight - innerHeight) / (N - 1 + LAST);
     const labels = tr("scenes") || [];
     scenes.forEach((_, i) => {
       const b = el("button");
       b.type = "button"; b.setAttribute("aria-label", labels[i] || `Scene ${i + 1}`);
-      b.addEventListener("click", () => scrollTo({ top: story.offsetTop + (i / N) * (story.offsetHeight - innerHeight) + 4, behavior: reduce ? "auto" : "smooth" }));
+      b.addEventListener("click", () => scrollTo({ top: story.offsetTop + i * sceneLen() + 4, behavior: reduce ? "auto" : "smooth" }));
       pager.appendChild(b);
     });
     const artImgs = [], artOK = [];
@@ -274,7 +276,7 @@
       stage.classList.toggle("has-art", !!artOK[i]);
       if (mandap) {
         clearTimeout(mandapTimer);
-        if (i === N - 1) mandapTimer = setTimeout(() => mandap.setActive(true), PHONE ? 650 : 0);  // on phones, let the sky change first
+        if (i === N - 1) mandapTimer = setTimeout(() => mandap.setActive(true), PHONE ? 120 : 0);   // already prepared a scene early; it then fades in gently
         else mandap.setActive(false);
         if (i === N - 2) mandap.warm();      // get the 3D mandap ready one scene early
       }
@@ -286,7 +288,7 @@
     function onScroll() {
       const total = story.offsetHeight - innerHeight;
       const p = Math.min(.9999, Math.max(0, -story.getBoundingClientRect().top / total));
-      setScene(Math.floor(p * N));
+      setScene(Math.min(N - 1, Math.floor(p * (N - 1 + LAST))));
     }
     setScene(0);
     addEventListener("scroll", () => requestAnimationFrame(onScroll), { passive: true });
