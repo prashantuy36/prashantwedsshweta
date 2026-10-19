@@ -809,3 +809,17 @@ html:not(.deva) .std__eyebrow { font-family: var(--f-caps); letter-spacing: .26e
 .helpline__item .cbtn { min-height: 36px; padding: 6px 13px; font-size: 11.5px; }
 .fam__tel a.cbtn, .helpline__item a.cbtn { color: #FFF2DA; background: radial-gradient(circle at 35% 30%, #D84A6E, #8E1F3F); border: 1px solid var(--gold-hi); margin: 0; font-family: var(--f-caps); letter-spacing: .08em; }
 .fam__tel a.cbtn { padding: 8px 16px; font-size: 12.5px; }
+
+/* ===================== phone rendering fixes ===================== */
+/* Safari draws a box around elements that combine a filter with animated SVG inside; the couple keeps
+   its soft ground shadow from the drawing itself instead */
+.pair, .stage[data-s] .pair { filter: none !important; }
+.story-art:empty { display: none; }
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  /* blur/colour filters are slow on phones: scenes fade and slide only */
+  .scene { filter: none !important; transition: opacity .8s ease, transform .8s ease !important; will-change: opacity, transform; }
+  .sun, .stage[data-s] .sun { filter: none !important; }
+  .story-art img { filter: none !important; }
+  .pair { will-change: transform, opacity; }
+  .mandap3d { will-change: opacity, transform; }
+}

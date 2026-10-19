@@ -254,10 +254,9 @@
       if (!src) return;
       const img = new Image();
       img.alt = ""; img.decoding = "async";
-      img.onload = () => { artOK[i] = true; setScene(current, true); };
+      // only added to the page once the file really exists (a missing file must not leave an empty box)
+      img.onload = () => { artOK[i] = true; artImgs[i] = img; $("#storyArt").appendChild(img); setScene(current, true); };
       img.src = src;
-      artImgs[i] = img;
-      $("#storyArt").appendChild(img);
     });
     const mandap = window.Mandap ? window.Mandap.create($("#mandap3d")) : null;
     if (mandap) stage.classList.add("has-mandap");
@@ -425,6 +424,8 @@
       if (instant || reduce) { opening.classList.add("gone"); return; }
       opening.classList.add("open");
       setTimeout(() => opening.classList.add("gone"), 2100);
+      // draw the 3D mandap once in the background so it doesn't stutter when the save-the-date scene arrives
+      if (mandap) setTimeout(() => { try { mandap.draw(); } catch (e) {} }, 2400);
       if (musicOK) audio.play().then(() => setPlaying(true)).catch(() => {});
     }
     if (resume) { open(true); requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, resume.y || 0); }); }
@@ -467,6 +468,8 @@
     (function autoplay() {
       const AP = BASE.autoplay || {};
       if (AP.enabled === false) return;
+      const phone = matchMedia("(hover: none) and (pointer: coarse)").matches || innerWidth <= 760;
+      if (phone && AP.onPhones === false) return;   // phones scroll themselves smoothly; auto-scroll can be switched on in wedding.json
       const IDLE = (+AP.waitSeconds || 5) * 1000;   // ms without touching before auto-play starts (also the pause on each scene)
       const SPEED = +AP.scrollSpeed || 42;            // px per second for the gentle scroll after the story
       const root = document.documentElement;
