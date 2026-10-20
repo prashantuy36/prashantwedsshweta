@@ -462,6 +462,15 @@
       audio.src = pick;
     }
     const setPlaying = (on) => mBtn.setAttribute("aria-pressed", String(on));
+    // music only while the invitation is on screen: pause when the tab/app is hidden or the phone is locked,
+    // and carry on when the guest comes back (unless they had paused it themselves)
+    let resumeOnReturn = false;
+    const onHide = () => { if (!audio.paused) { resumeOnReturn = true; audio.pause(); setPlaying(false); } };
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) onHide();
+      else if (resumeOnReturn) { resumeOnReturn = false; audio.play().then(() => setPlaying(true)).catch(() => {}); }
+    });
+    addEventListener("pagehide", onHide);
     mBtn.addEventListener("click", () => {
       if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {}); else { audio.pause(); setPlaying(false); }
     });
