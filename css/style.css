@@ -853,3 +853,113 @@ html:not(.deva) .std__eyebrow { font-family: var(--f-caps); letter-spacing: .26e
   .snap { position: absolute; left: 0; width: 1px; height: 1px; scroll-snap-align: start; pointer-events: none; }
 }
 .snap { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
+
+/* =====================================================================
+   LOOK FROM THE REFERENCE VIDEO  (fonts · colour-coding · light sunset sky · rose garland · icons · blur-in text)
+   ===================================================================== */
+:root {
+  --f-script: "Great Vibes", "Pinyon Script", cursive;
+  --f-caps: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --c-title: #8B1E2B;   /* maroon: titles and most lines */
+  --c-name: #22408F;    /* royal blue: the couple's names */
+  --c-date: #1E6B4E;    /* green: dates and "weds" */
+}
+body { font-size: clamp(14.5px, .45vw + 12.5px, 17px); line-height: 1.6; }
+/* no spaced-out capitals anywhere: clean sentence-case like the video */
+.eyebrow, .sc-date, .sc-weds, .std__eyebrow, .std__date, .opening__greet, .stop__day, .stop__name, .dress, .link, .btn,
+.count span, .dock a, .fam__side, .fam__label, .fam__title, .helpline__title, .stamp__text h3, .stamp__country, .cbtn, .langpick__ask {
+  text-transform: none !important; letter-spacing: .01em !important;
+}
+.eyebrow, .sc-date, .std__date, .stop__day, .fam__label, .fam__side, .helpline__title { font-weight: 600; }
+.sc-lead, .sc-bless, .sc-rel, .std__for, .closing__line, .fam__addr, .night__when, .sec-head__sub, .opening__hint { font-style: italic; font-weight: 500; }
+
+/* story text colours */
+.scene { color: var(--c-title); }
+.sc-hi, .sc-mantra { color: var(--c-title); }
+.sc-shloka { color: #7A3A40; }
+.eyebrow { color: var(--c-title); font-size: .92em; }
+.eyebrow--gold { color: var(--c-date); }
+.names { font-size: clamp(64px, 11vw, 140px); line-height: 1.05; color: var(--c-title); }
+.names .amp { color: var(--c-date); }
+.sc-person { font-size: clamp(44px, 6.2vw, 78px); line-height: 1.15; color: var(--c-name); text-shadow: 0 1px 0 rgba(255,255,255,.6); }
+.sc-weds { color: var(--c-date); font-family: var(--f-script) !important; font-size: 2.2em !important; font-weight: 400; }
+.sc-weds .hindi { font-size: .55em; color: var(--c-title); }
+.sc-date { color: var(--c-date); font-size: clamp(15px, 1.5vw, 19px); }
+.sc-date .dot { color: var(--c-title); }
+.turn { color: var(--c-title); }
+
+/* Ganesha line-art above the shloka */
+.ganesh { width: clamp(64px, 9vw, 92px); color: var(--c-title); margin-bottom: 2px; }
+.ganesh svg { width: 100%; height: auto; display: block; }
+
+/* light sunset sky through every scene (no dark night before the mandap) */
+.sky__l:nth-child(1) { --c1: #8EBDEB !important; --c2: #CFE3F4 !important; --c3: #F7D7C6 !important; }
+.sky__l:nth-child(2) { --c1: #7DB4E8 !important; --c2: #C8E0F3 !important; --c3: #F6DCC8 !important; }
+.sky__l:nth-child(3) { --c1: #84B3E3 !important; --c2: #DCD6EA !important; --c3: #F8C9AE !important; }
+.sky__l:nth-child(4) { --c1: #7FA8DC !important; --c2: #EDC9CF !important; --c3: #F7B48E !important; }
+.sky__l:nth-child(5) { --c1: #6F9AD3 !important; --c2: #F0C2C4 !important; --c3: #F6A57C !important; }
+.stage[data-s="4"] { --cl-shadow: #D9AFC0; --cl-mid: #F7DDE0; --cl-hi: #FFF4EE; --cl-rim: #FFC49A; --ghat: #B38AAE; --water-1: #F4B28E; --water-2: #A98AB8;
+  --bank-1: #7FA35A; --bank-2: #3E6A34; --bank-3: #5E8A48; --bank-4: #2C5226; --leaf-1: #2E5A2E; --leaf-2: #4C8040; --leaf-3: #8DB264; --ban-1: #82B25A; --ban-2: #3A7230; --pair: #3A1A34; }
+.stage[data-s="4"] .stars-dusk, .stage[data-s="4"] .fireflies { opacity: 0 !important; }
+.stage[data-s="4"] .sun { opacity: 1 !important; transform: translateY(16vh) scale(1.15) !important; }
+.moon-dusk { box-shadow: 15px -7px 0 0 #FFFFFF !important; filter: drop-shadow(0 0 10px rgba(255,255,255,.7)) !important; }
+.stage[data-s="4"] .moon-dusk { opacity: .85; }
+
+/* save the date in the video's colours */
+.std, .stage.has-mandap .std { color: var(--c-title); text-shadow: 0 1px 10px rgba(255,255,255,.65); }
+.scene[data-i="4"]::before { background: radial-gradient(ellipse at center, rgba(255,250,244,.6), transparent 68%) !important; }
+.std__eyebrow, html:not(.deva) .std__eyebrow { font-family: var(--f-script) !important; font-size: clamp(38px, 5vw, 56px) !important; color: var(--c-title) !important; font-weight: 400; letter-spacing: 0 !important; }
+.std__for { color: var(--c-title); }
+.std__names { color: var(--c-name); text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+.std__amp { color: var(--c-date); }
+.std__date { color: var(--c-date); font-size: clamp(16px, 1.6vw, 20px); }
+.std__rule, .std__rule::before, .std__rule::after { color: var(--c-title); background-color: transparent; }
+.std__rule::before, .std__rule::after { background: var(--c-title) !important; opacity: .5; }
+.std__muhurat { color: var(--c-title); font-weight: 600; font-style: italic; }
+.std__venue { color: var(--c-date); font-weight: 600; }
+
+/* opening screen */
+.opening__names { font-size: clamp(54px, 10vw, 92px); }
+.opening__greet { font-size: 15px; font-weight: 500; }
+
+/* section headings in script, like "Shubh Tilak" / "Mehndi" in the video */
+.sec-head h2, .night h2, .closing__title { font-family: var(--f-script) !important; font-weight: 400; letter-spacing: 0 !important; text-transform: none !important; font-size: clamp(46px, 7vw, 76px); line-height: 1.15; }
+.sec-head h2:not(.foil), .closing__title { color: var(--c-title); }
+.sec-head__hi, .closing__hi { font-size: clamp(18px, 2.2vw, 22px); }
+.stop__name { font-family: var(--f-script) !important; font-size: 34px; font-weight: 400; line-height: 1.2; letter-spacing: 0 !important; }
+.stop__time { font-weight: 600; }
+.stop__day { font-size: 13px; }
+.fam__kids p { font-size: clamp(30px, 3.4vw, 38px); }
+.fam__title { font-family: var(--f-script) !important; font-size: clamp(30px, 3.4vw, 38px); font-weight: 400; color: var(--c-title); }
+.fam__who { color: var(--c-name); }
+.stamp__text h3 { font-weight: 600; }
+.count b { font-family: var(--f-caps); font-weight: 600; }
+.dock a { font-size: 12.5px; font-weight: 500; }
+.footer-tag { font-family: var(--f-script); }
+
+/* folded-hands (namaste) at the end, instead of the kalash */
+.namaste { width: clamp(70px, 10vw, 100px); margin: 0 auto; color: var(--c-title); }
+.namaste svg { width: 100%; height: auto; display: block; }
+
+/* rose & jasmine garland: lighter and a little shorter than the marigold toran */
+.toran { height: 96px; background-size: auto 96px; }
+@media (max-width: 760px) { .toran { height: 78px; background-size: auto 78px; } }
+
+/* text arrives the way it does in the video: from a soft blur to sharp */
+.scene > * { filter: blur(7px); opacity: 0; transition: filter 1.2s ease, opacity 1.2s ease; }
+.scene.on > * { filter: blur(0); opacity: 1; }
+.scene.on > *:nth-child(2) { transition-delay: .12s; } .scene.on > *:nth-child(3) { transition-delay: .24s; }
+.scene.on > *:nth-child(4) { transition-delay: .36s; } .scene.on > *:nth-child(5) { transition-delay: .48s; }
+.scene.on > *:nth-child(6) { transition-delay: .6s; }
+.std > * { filter: blur(6px); opacity: 0; transition: filter 1.2s ease, opacity 1.2s ease; }
+.scene.on .std > * { filter: blur(0); opacity: 1; }
+.scene.on .std > *:nth-child(n+3) { transition-delay: .25s; } .scene.on .std > *:nth-child(n+5) { transition-delay: .5s; }
+.toran { height: 124px !important; background-size: auto 124px !important; }
+@media (max-width: 760px) { .toran { height: 100px !important; background-size: auto 100px !important; } }
+.opening__greet { white-space: normal; max-width: 30ch; line-height: 1.4; }
+.opening__center { width: min(100%, 560px); box-sizing: border-box; }
+.opening__greet { max-width: 100%; }
+.stop__name { font-size: 30px; }
+.ganesh { width: clamp(54px, 6vw, 72px); }
+@media (min-width: 761px) { .scene[data-i="1"] { gap: 4px; } .scene[data-i="1"] .sc-shloka { line-height: 1.5; } }

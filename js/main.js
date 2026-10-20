@@ -195,7 +195,9 @@
     });
 
     /* ---------- painted pieces ---------- */
-    const toranBg = A.toran();
+    const toranBg = A.roseToran ? A.roseToran() : A.toran();
+    if ($("#ganesh")) $("#ganesh").innerHTML = A.GANESHA || "";
+    if ($("#namaste")) $("#namaste").innerHTML = A.NAMASTE || "";
     $$(".toran").forEach((t) => (t.style.backgroundImage = toranBg));
     $(".diyas").style.backgroundImage = A.diyaRow();
     $("#ghats").innerHTML = A.ghats({ seed: 7, ground: 300, H: 300, fill: "var(--ghat)", minH: 40, maxH: 120 });

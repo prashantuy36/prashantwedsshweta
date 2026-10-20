@@ -30,6 +30,52 @@ window.ART = (function () {
     return url(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="110" viewBox="0 0 ${W} 110"><defs>${GRAD}</defs><path d="M0 14 Q70 38 140 14" fill="none" stroke="#7A4B1C" stroke-width="2"/>${l}${s}${b}</svg>`);
   }
 
+
+  /* ---------- rose + jasmine garland (light, romantic) ---------- */
+  function rose(x, y, r) {
+    return `<g transform="translate(${f(x)} ${f(y)})">
+      <path d="M${-r * 1.5} ${r * .2} C${-r} ${-r * .7} ${-r * .2} ${-r * .4} 0 0 C${-r * .6} ${r * .6} ${-r * 1.2} ${r * .6} ${-r * 1.5} ${r * .2}Z" fill="#7FA65A"/>
+      <path d="M${r * 1.5} ${r * .2} C${r} ${-r * .7} ${r * .2} ${-r * .4} 0 0 C${r * .6} ${r * .6} ${r * 1.2} ${r * .6} ${r * 1.5} ${r * .2}Z" fill="#6E9A4C"/>
+      <circle r="${r}" fill="#F4C6CF"/><circle r="${f(r * .74)}" fill="#EBA0B1"/><circle r="${f(r * .48)}" fill="#D9768E"/>
+      <path d="M${f(-r * .5)} 0 A${f(r * .5)} ${f(r * .5)} 0 1 1 ${f(r * .2)} ${f(r * .3)} A${f(r * .25)} ${f(r * .25)} 0 1 1 0 ${f(-r * .1)}" fill="none" stroke="#B9536E" stroke-width="1" stroke-linecap="round"/>
+    </g>`;
+  }
+  const bud = (x, y, a) => `<ellipse cx="${f(x)}" cy="${f(y)}" rx="3.8" ry="2.6" transform="rotate(${f(a)} ${f(x)} ${f(y)})" fill="#FFFDF6" stroke="#E2D3B8" stroke-width=".8"/>`;
+  function roseToran() {
+    const W = 120, H = 130, ry = (x) => 11 + 96 * (x / W) * (1 - x / W);
+    const strand = (x, y0, n, sz) => { let o = ""; for (let k = 0; k < n; k++) o += bud(x, y0 + k * 7.2, 90);
+      return o + `<path d="M${x - 4.5} ${y0 + n * 7.2 - 2} q4.5 -3.5 9 0 q-1 9 -4.5 12 q-3.5 -3 -4.5 -12z" fill="#C8455E"/><path d="M${x - 3} ${y0 + n * 7.2 - 3} l3 -4 l3 4" fill="#6E9A4C"/>`; };
+    let j = "", h = "";
+    for (let x = 3; x < W - 2; x += 4.6) { const sl = 96 * (1 - 2 * x / W) / W; j += bud(x, ry(x), Math.atan(sl) * 57.3) + bud(x + 2.3, ry(x + 2.3) + 3.4, Math.atan(sl) * 57.3); }
+    h += strand(0, 26, 9) + strand(W, 26, 9) + strand(30, ry(30) + 9, 4) + strand(90, ry(90) + 9, 4);
+    return url(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+      <path d="M0 11 Q60 59 120 11" fill="none" stroke="#8DA86A" stroke-width="1.6"/>${h}${j}
+      ${rose(60, ry(60) + 4, 8)}${rose(30, ry(30) + 3, 5.5)}${rose(90, ry(90) + 3, 5.5)}${rose(0, 12, 12)}${rose(W, 12, 12)}</svg>`);
+  }
+
+  /* ---------- line-art Ganesha (blessing) and folded hands (closing) ---------- */
+  const GANESHA = `<svg viewBox="0 0 100 112" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M38 24 Q50 6 62 24"/><path d="M50 9 V3"/><circle cx="50" cy="2.5" r="1.6" fill="currentColor" stroke="none"/>
+    <path d="M36 26 H64"/>
+    <path d="M36 28 C18 18 6 38 15 52 C20 60 31 58 35 48"/><path d="M64 28 C82 18 94 38 85 52 C80 60 69 58 65 48"/>
+    <path d="M36 28 C35 38 37 44 42 48"/><path d="M64 28 C65 38 63 44 58 48"/>
+    <path d="M42 35 q3 -2 6 0"/><path d="M52 35 q3 -2 6 0"/><path d="M50 27 V32"/>
+    <path d="M50 38 C49 52 44 62 48 72 C52 82 64 82 66 72 C67 66 61 63 58 67 C56 70 59 73 61 71"/>
+    <path d="M43 49 L37 58"/>
+    <path d="M30 62 C24 84 34 100 50 100 C66 100 76 84 70 62"/>
+    <path d="M26 100 Q50 110 74 100"/>
+    <text x="50" y="92" text-anchor="middle" font-size="13" fill="currentColor" stroke="none" font-family="serif">ॐ</text>
+  </svg>`;
+  const NAMASTE = `<svg viewBox="0 0 80 100" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M40 6 C36 8 33 16 32 26 C31 36 31 44 29 52 C27 60 23 66 20 72"/>
+    <path d="M40 6 C44 8 47 16 48 26 C49 36 49 44 51 52 C53 60 57 66 60 72"/>
+    <path d="M40 6 V70"/>
+    <path d="M36 14 C34 18 33 24 33 30"/><path d="M44 14 C46 18 47 24 47 30"/>
+    <path d="M33 46 C27 42 24 48 29 54"/><path d="M47 46 C53 42 56 48 51 54"/>
+    <path d="M14 74 L28 88"/><path d="M66 74 L52 88"/><path d="M20 72 L12 80"/><path d="M60 72 L68 80"/>
+    <path d="M28 88 C34 84 46 84 52 88"/>
+  </svg>`;
+
   /* ---------- brass diyas + lotus row (bottom frame) ---------- */
   function diyaRow() {
     return url(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="70" viewBox="0 0 120 70"><defs>
@@ -231,5 +277,5 @@ window.ART = (function () {
     gift: `<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 8l9 6 9-6"/><circle cx="12" cy="14" r="1.6"/>`
   };
 
-  return { rng, url, toran, diyaRow, cloud, ghats, bank, tree, banana, pair, boat, band, kalash, lantern, floatDiya, ICONS, TIPS };
+  return { rng, url, toran, roseToran, GANESHA, NAMASTE, diyaRow, cloud, ghats, bank, tree, banana, pair, boat, band, kalash, lantern, floatDiya, ICONS, TIPS };
 })();
