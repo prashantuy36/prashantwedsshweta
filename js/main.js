@@ -307,6 +307,7 @@
         else mandap.setActive(false);
         if (i === N - 2) mandap.warm();      // get the 3D mandap ready one scene early
       }
+      if (typeof fitScenes === "function") requestAnimationFrame(() => fitScenes());
       // the couple changes pose with each scene, with a little hop
       const pair = $("#pair");
       pair.className = "pair " + (POSES[i] || "pose-hold");
@@ -314,6 +315,26 @@
     }
     // phones: invisible resting points, one per page, so a swipe settles on a page instead of flying past it
     const snaps = scenes.map(() => { const d = el("i", "snap"); d.setAttribute("aria-hidden", "true"); story.appendChild(d); return d; });
+    /* phones: keep every page's writing above the couple (or the mandap). If a page's text is taller than the
+       space between the garland and the couple, it is scaled down just enough to fit; nothing overlaps. */
+    function fitScenes() {
+      const small = innerWidth <= 760;
+      const top = $("#scenes").getBoundingClientRect().top;
+      const pr = $("#pair").getBoundingClientRect(), pairTop = pr.top + pr.height * .2;   // the drawing has empty sky above the turban
+      const cv = $("#mandap3d"), mandapTop = cv ? cv.getBoundingClientRect().top + cv.offsetHeight * .1 : innerHeight;
+      scenes.forEach((sc, i) => {
+        sc.style.zoom = "";
+        if (!small) return;
+        const limit = (i === N - 1 ? mandapTop : pairTop) - 10;
+        const h = sc.scrollHeight, avail = limit - top;
+        if (h > avail && avail > 80) sc.style.zoom = Math.max(.55, avail / h).toFixed(3);
+      });
+    }
+    fitScenes();
+    addEventListener("resize", fitScenes);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitScenes);
+    setTimeout(fitScenes, 1200); setTimeout(fitScenes, 3000);
+
     function placeSnaps() { const u = sceneLen(); snaps.forEach((d, k) => (d.style.top = `${Math.round(k * u + (k ? u * .35 : 0))}px`)); }
     placeSnaps(); addEventListener("resize", placeSnaps);
     function onScroll() {

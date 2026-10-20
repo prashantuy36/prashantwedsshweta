@@ -966,3 +966,18 @@ body { font-size: clamp(14.5px, .45vw + 12.5px, 17px); line-height: 1.6; }
 /* the script capitals (P, S) are taller than the line: give the gold-foil names room so the tops aren't clipped */
 .opening__names, .langpick__names { line-height: 1.3 !important; padding: .28em .2em .12em !important; margin-top: -.2em; }
 .opening__names { font-size: clamp(54px, 9.5vw, 74px) !important; }
+
+/* phones: a little smaller writing in the story and less empty space, so it sits between the garland and the couple */
+@media (max-width: 760px) {
+  .stage .scenes, .stage:not([data-s="4"]) .scenes, .stage.has-mandap[data-s="4"] .scenes { top: 96px !important; }
+  .scene { gap: 4px; padding-inline: 4px; }
+  .names { font-size: clamp(52px, 15vw, 64px); }
+  .sc-person { font-size: clamp(36px, 10.5vw, 44px); }
+  .std__names { font-size: clamp(46px, 13vw, 58px) !important; }
+  .std__eyebrow, html:not(.deva) .std__eyebrow { font-size: 36px !important; }
+  .sc-lead, .sc-rel, .sc-bless, .std__venue, .std__for { font-size: 14.5px; line-height: 1.5; }
+  .sc-hi, .sc-mantra { font-size: 22px; }
+  .sc-shloka { font-size: 13.5px; }
+  .ganesh { width: 50px; }
+}
+.scene { align-self: start; }
