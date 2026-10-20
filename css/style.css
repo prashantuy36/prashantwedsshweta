@@ -981,3 +981,27 @@ body { font-size: clamp(14.5px, .45vw + 12.5px, 17px); line-height: 1.6; }
   .ganesh { width: 50px; }
 }
 .scene { align-self: start; }
+
+/* =====================================================================
+   MANDAP AT NIGHT: the last story page turns to a starry evening (the rest stays in the light sunset look)
+   ===================================================================== */
+.sky__l:nth-child(5) { --c1: #141C4A !important; --c2: #4B3A7E !important; --c3: #C9707A !important; }
+.stage[data-s="4"] { --cl-shadow: #4A3E74; --cl-mid: #6E5C98; --cl-hi: #B497BE; --cl-rim: #E38A7C; --ghat: #3A2F62; --water-1: #6A4A80; --water-2: #23234F;
+  --bank-1: #2F5240; --bank-2: #172C22; --bank-3: #243F33; --bank-4: #0F1F18; --leaf-1: #132721; --leaf-2: #1F3B32; --leaf-3: #3F5E48; --ban-1: #355E42; --ban-2: #183226; --pair: #22122A; }
+.stage[data-s="4"] .stars-dusk, .stage[data-s="4"] .fireflies { opacity: 1 !important; }
+.stage[data-s="4"] .sun { opacity: 0 !important; transform: translateY(30vh) scale(1.1) !important; }
+.moon-dusk { box-shadow: 15px -7px 0 0 #F8E7B4 !important; filter: drop-shadow(0 0 20px rgba(248,231,180,.6)) !important; }
+.stage[data-s="4"] .moon-dusk { opacity: 1 !important; }
+/* night colours for the writing: cream and gold instead of maroon and blue */
+.scene[data-i="4"]::before { background: radial-gradient(ellipse at center, rgba(20,14,50,.42), transparent 68%) !important; }
+.std, .stage.has-mandap .std { color: #FFF2DA; text-shadow: 0 2px 14px rgba(10,6,30,.7); }
+.std__eyebrow, html:not(.deva) .std__eyebrow { color: #F7B7C6 !important; }
+.std__for { color: #FBE6C8; }
+.std__names { color: var(--gold-hi); text-shadow: 0 2px 0 rgba(60,20,40,.4), 0 8px 26px rgba(10,6,30,.7); }
+.std__amp { color: #F7B7C6; }
+.std__date { color: #A8E6C8; }
+.std__rule::before, .std__rule::after { background: var(--gold-hi) !important; }
+.std__rule { color: var(--gold-hi); }
+.std__muhurat { color: var(--gold-hi); }
+.std__venue { color: #A8E6C8; }
+.stage[data-s="4"] .toran { filter: brightness(.82) saturate(.9); transition: filter 2s ease; }
