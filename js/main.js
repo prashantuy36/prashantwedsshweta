@@ -474,16 +474,44 @@
     mBtn.addEventListener("click", () => {
       if (audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {}); else { audio.pause(); setPlaying(false); }
     });
+    /* ---------- refresh keeps the guest where they were (same tab only; a new visit starts from the seal) ---------- */
+    const STATE_KEY = "invite-state";
+    const saved = (() => { try { return JSON.parse(sessionStorage.getItem(STATE_KEY) || "null"); } catch (e) { return null; } })();
+    let musicWanted = !!(saved && saved.music), opened = false;
+    const saveState = () => { if (!opened) return; try { sessionStorage.setItem(STATE_KEY, JSON.stringify({ y: Math.round(scrollY), music: musicWanted })); } catch (e) {} };
+    let saveRaf = 0;
+    addEventListener("scroll", () => { cancelAnimationFrame(saveRaf); saveRaf = requestAnimationFrame(saveState); }, { passive: true });
+    addEventListener("pagehide", saveState);
+    mBtn.addEventListener("click", () => { musicWanted = !musicWanted; saveState(); });
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
     function open(instant) {
+      opened = true;
       document.body.classList.remove("locked");
-      if (instant || reduce) { opening.classList.add("gone"); return; }
+      // draw the 3D mandap once in the background so it doesn't stutter when the save-the-date scene arrives
+      if (mandap) setTimeout(() => { try { mandap.warm(); } catch (e) {} }, instant ? 600 : 2400);
+      if (instant || reduce) { opening.classList.add("gone"); saveState(); return; }
       opening.classList.add("open");
       setTimeout(() => opening.classList.add("gone"), 2100);
-      // draw the 3D mandap once in the background so it doesn't stutter when the save-the-date scene arrives
-      if (mandap) setTimeout(() => { try { mandap.warm(); } catch (e) {} }, 2400);
+      musicWanted = true; saveState();
       if (musicOK) audio.play().then(() => setPlaying(true)).catch(() => {});
     }
-    if (resume) { open(true); requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, resume.y || 0); }); }
+    function restore(y) {
+      open(true);
+      const go = () => { document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, y || 0); };
+      requestAnimationFrame(go); setTimeout(go, 350);
+      // browsers only allow sound after a tap, so the music continues on the guest's first touch
+      if (musicWanted && songs.length) {
+        const resumeMusic = (e) => {
+          ["pointerdown", "keydown", "touchstart"].forEach((ev) => removeEventListener(ev, resumeMusic, true));
+          if (e && e.target && e.target.closest && e.target.closest("#musicBtn")) return;   // the music button handles itself
+          if (musicWanted && audio.paused) audio.play().then(() => setPlaying(true)).catch(() => {});
+        };
+        ["pointerdown", "keydown", "touchstart"].forEach((ev) => addEventListener(ev, resumeMusic, true));
+      }
+    }
+    if (resume) restore(resume.y);
+    else if (saved) restore(saved.y);
     else if (location.hash && location.hash !== "#home") open(true);
     else $("#openBtn").addEventListener("click", () => open(false));
 
