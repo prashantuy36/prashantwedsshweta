@@ -839,7 +839,7 @@ html:not(.deva) .std__eyebrow { font-family: var(--f-caps); letter-spacing: .26e
 /* ===================== phones: calmer page-to-page story ===================== */
 @media (max-width: 760px), (hover: none) and (pointer: coarse) {
   /* more finger-scroll per scene, so one swipe doesn't race through several pages */
-  .story { height: calc((var(--n) + .6) * 140svh); }
+  .story { height: calc((var(--n) + .6) * 115svh); }
   /* the old page fades out first, then the new one rises in slowly (no overlapping text) */
   .scene { transform: translateY(26px); transition: opacity .6s ease, transform .6s ease !important; }
   .scene.on { transition: opacity 1.4s ease .4s, transform 1.6s cubic-bezier(.22,.7,.3,1) .4s !important; }
