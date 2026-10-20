@@ -102,6 +102,24 @@ summary { cursor: pointer; font-family: var(--f-caps); font-size: 12px; letter-s
     </form>
     <div class="row">
       <div class="grow">
+        <label for="sal">Greeting on their envelope</label>
+        <select id="sal">
+          <option value="Dear">Dear …</option>
+          <option value="Respected">Respected …</option>
+          <option value="Pranam">Pranam …</option>
+          <option value="Namaste">Namaste …</option>
+          <option value="-">Just the name</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow">
+        <label for="note">Personal note <span style="text-transform:none;letter-spacing:0;font-family:var(--f-body);font-style:italic">(optional, shown under their name)</span></label>
+        <input id="note" type="text" maxlength="160" placeholder="e.g. Bua ji, please come early for Haldi!" autocomplete="off">
+      </div>
+    </div>
+    <div class="row">
+      <div class="grow">
         <label for="side">Which events should they see?</label>
         <select id="side">
           <option value="">All events</option>
@@ -177,7 +195,8 @@ Upadhyay & Choudhary families`;
   // the name (and side) are packed into a short code so they can't be read in the WhatsApp message
   const encode = (txt) => { let bin = ""; new TextEncoder().encode(txt).forEach((b) => (bin += String.fromCharCode(b)));
     return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
-  const linkFor = (g) => SITE + "?i=" + encode(g.name.trim() + (g.side ? "\u0001" + g.side : ""));
+  // packed as: name · side · greeting · note (separated by an invisible character)
+  const linkFor = (g) => SITE + "?i=" + encode([g.name.trim(), g.side || "", g.sal || "Dear", (g.note || "").trim()].join("\u0001").replace(/\u0001+$/, ""));
   const message = (g) => msgBox.value.replace(/\{name\}/g, g.name.trim()).replace(/\{link\}/g, linkFor(g));
   const SIDE = { groom: "Groom's side", bride: "Bride's side" };
 
@@ -192,8 +211,9 @@ Upadhyay & Choudhary families`;
     $("#list").innerHTML = list.map((g, i) => {
       const url = linkFor(g);
       return `<article class="guest${g.sent ? " sent" : ""}" data-i="${i}">
-        <div class="guest__top"><span class="guest__name">${esc(g.name)}${g.side ? `<span class="guest__side">${SIDE[g.side]}</span>` : ""}</span>
+        <div class="guest__top"><span class="guest__name">${g.sal && g.sal !== "-" ? `<small style="font-weight:400;color:#8a6a7a">${esc(g.sal)}</small> ` : ""}${esc(g.name)}${g.side ? `<span class="guest__side">${SIDE[g.side]}</span>` : ""}</span>
           <button class="x" type="button" data-act="del" aria-label="Remove ${esc(g.name)}">×</button></div>
+        ${g.note ? `<p class="hint" style="margin:0">“${esc(g.note)}”</p>` : ""}
         <a class="guest__link" href="${esc(url)}" target="_blank" rel="noopener">${esc(url.replace(/^https?:\/\//, ""))}</a>
         <div class="guest__actions">
           <a class="btn wa small" data-act="wa" href="https://wa.me/?text=${encodeURIComponent(message(g))}" target="_blank" rel="noopener">${ICON_WA}WhatsApp</a>
@@ -213,17 +233,17 @@ Upadhyay & Choudhary families`;
     toast(`${what} copied`);
   }
   function add(names) {
-    const side = $("#side").value;
+    const side = $("#side").value, sal = $("#sal").value, note = $("#note").value.trim();
     let added = 0;
     names.map((n) => n.trim()).filter(Boolean).forEach((name) => {
       if (list.some((g) => g.name.toLowerCase() === name.toLowerCase() && (g.side || "") === side)) return;
-      list.push({ name, side, sent: false }); added++;
+      list.push({ name, side, sal, note, sent: false }); added++;
     });
     render();
     toast(added ? `${added} link${added > 1 ? "s" : ""} created` : "Already in your list");
   }
 
-  $("#oneForm").addEventListener("submit", (e) => { e.preventDefault(); add([$("#name").value]); $("#name").value = ""; $("#name").focus(); });
+  $("#oneForm").addEventListener("submit", (e) => { e.preventDefault(); add([$("#name").value]); $("#name").value = ""; $("#note").value = ""; $("#name").focus(); });
   $("#manyForm").addEventListener("submit", (e) => { e.preventDefault(); add($("#many").value.split(/\n|,(?![^(]*\))/)); $("#many").value = ""; });
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
     document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));

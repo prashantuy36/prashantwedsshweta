@@ -38,27 +38,31 @@
      The name is read once, kept for this visit (so a refresh still greets them), and the address bar is
      cleaned to just the site address. */
   const INV = (function () {
-    let name = "", side = "";
+    let name = "", side = "", sal = "", note = "";
     const code = params.get("i");
     if (code) {
       try {
         const b64 = code.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((code.length + 3) % 4);
         const txt = new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
-        [name, side = ""] = txt.split("\u0001");
+        const parts = txt.split("\u0001");
+        [name, side = "", sal = "", note = ""] = parts;
+        if (parts.length < 3) sal = "Dear";   // links made before greetings could be chosen
       } catch (e) {}
     } else if (params.get("guest")) {
-      name = params.get("guest").replace(/[-_+]/g, " ");
+      name = params.get("guest").replace(/[-_+]/g, " "); sal = "Dear";
     }
     try {
-      if (name) sessionStorage.setItem("invite-guest", JSON.stringify({ name, side }));
-      else ({ name = "", side = "" } = JSON.parse(sessionStorage.getItem("invite-guest") || "{}"));
+      if (name) sessionStorage.setItem("invite-guest", JSON.stringify({ name, side, sal, note }));
+      else ({ name = "", side = "", sal = "", note = "" } = JSON.parse(sessionStorage.getItem("invite-guest") || "{}"));
     } catch (e) {}
     if (params.has("i") || params.has("guest") || params.has("side")) {
       const keep = new URLSearchParams(location.search); ["i", "guest", "side"].forEach((k) => keep.delete(k));
       const q = keep.toString();
       try { history.replaceState(null, "", location.pathname.replace(/index\.html$/, "") + (q ? "?" + q : "") + location.hash); } catch (e) {}
     }
-    return { name: String(name).trim().slice(0, 80), side: side === "groom" || side === "bride" ? side : "" };
+    name = String(name).trim().slice(0, 80); sal = String(sal || "").trim().slice(0, 20); if (sal === "-") sal = "";
+    return { name, side: side === "groom" || side === "bride" ? side : "", sal, note: String(note || "").trim().slice(0, 160),
+      full: name ? (sal ? `${sal} ${name}` : name) : "" };
   })();
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const get = (path) => path.split(".").reduce((o, k) => (o ? o[k] : undefined), C);
@@ -175,7 +179,15 @@
     // phone numbers for "Need help on the way?": the senders (or a "contacts" list, if one is given)
     const CONTACTS = (C.contacts && C.contacts.length) ? C.contacts.map((c) => ({ name: c.name, phones: c.phones || [c.phone] }))
       : FAM.filter((f) => f.sender && f.sender.name).map((f) => ({ name: `${f.sender.name}${f.sender.role ? ` (${f.sender.role})` : ""}`, phones: f.sender.phones || [], vc: { name: f.sender.name, role: f.sender.role, address: f.sender.address, phones: f.sender.phones } }));
-    if (INV.name) $("#greet").textContent = tr("greetGuest", { guest: INV.name });
+    // the family is greeted on the envelope itself (the small line above stays "You are invited")
+    /* ---------- the envelope on the first page, addressed to this family ---------- */
+    $("#envName").textContent = INV.full || tr("envAnyone") || "Our dear family & friends";
+    { const L = $("#envName").textContent.length; $("#envName").classList.toggle("long", L > 17); $("#envName").classList.toggle("xlong", L > 27); }
+    if (INV.note) { $("#envNote").textContent = `“${INV.note}”`; $("#envNote").hidden = false; }
+    $("#envCouple").innerHTML = `${esc(G)} <i>${esc(tr("amp"))}</i> ${esc(B)}`;
+    $("#envDate").textContent = C.dateShort || "";
+    $("#envFrom").textContent = tr("envFrom") || "";
+    if (INV.full) { $("#closingGuest").textContent = tr("closeGuest", { guest: INV.full }); $("#closingGuest").hidden = false; }
     function saveContact(c) {
       const [first, ...rest] = String(c.name).split(" ");
       const vcf = ["BEGIN:VCARD", "VERSION:3.0", `N:${rest.join(" ")};${first};;;`, `FN:${c.name}`,
@@ -519,7 +531,14 @@
     }
     if (resume) { open(true); requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, resume.y || 0); }); }
     else if (hashed) { open(true); const t = document.querySelector(location.hash); if (t) t.scrollIntoView(); }
-    else $("#openBtn").addEventListener("click", () => open(false));
+    else $("#openBtn").addEventListener("click", () => {
+      // start the song straight away (phones only allow sound right after a tap), open the envelope, then part the clouds
+      if (musicOK) audio.play().then(() => setPlaying(true)).catch(() => {});
+      const env = $("#envelope");
+      if (!env || reduce) return open(false);
+      env.classList.add("is-open");
+      setTimeout(() => open(false), 1500);
+    }, { once: true });
 
     /* ---------- change language later: remember where the guest was and reload in the new language ---------- */
     const langBtn = $("#langBtn");

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Rozha+One&family=Tiro+Devanagari+Hindi&display=swap">
-<link rel="stylesheet" href="css/style.css?v=202610200106">
+<link rel="stylesheet" href="css/style.css?v=202610200115">
 </head>
 <body class="locked">
 
@@ -34,7 +34,19 @@
     <p class="opening__greet" id="greet" data-t="greet">You are invited</p>
     <p class="hindi opening__hi">॥ शुभ विवाह ॥</p>
     <p class="opening__names"><span data-f="groom.name"></span> <i data-t="amp">&amp;</i> <span data-f="bride.name"></span></p>
-    <button class="seal" id="openBtn" type="button" data-ta="openAria" aria-label="Open the invitation"><span class="seal__mono" id="sealMono"></span></button>
+    <!-- envelope addressed to the family; the wax seal opens it -->
+    <div class="envelope" id="envelope">
+      <div class="env__back" aria-hidden="true"></div>
+      <div class="env__card" aria-hidden="true"><p class="hindi">॥ शुभ विवाह ॥</p><p class="env__couple" id="envCouple"></p><p class="env__date" id="envDate"></p></div>
+      <div class="env__front">
+        <p class="env__to">To,</p>
+        <p class="env__name" id="envName"></p>
+        <p class="env__note" id="envNote" hidden></p>
+        <p class="env__from" id="envFrom"></p>
+      </div>
+      <div class="env__flap" aria-hidden="true"></div>
+      <button class="seal" id="openBtn" type="button" data-ta="openAria" aria-label="Open the invitation"><span class="seal__mono" id="sealMono"></span></button>
+    </div>
     <p class="opening__hint" data-t="hint">Tap the seal to open</p>
   </div>
 </div>
@@ -168,6 +180,7 @@
       <figure class="closing__art art-slot" data-art="namaste"><div class="namaste" id="namaste" aria-hidden="true"></div></figure>
       <p class="hindi closing__hi" data-t="closeHi">आपकी प्रतीक्षा में</p>
       <h2 class="closing__title" data-t="closeTitle">Awaiting your presence</h2>
+      <p class="closing__guest" id="closingGuest" hidden></p>
       <p class="closing__line" data-f="closingLine"></p>
       <div class="families" id="families"></div>
       <p class="footer-tag" data-f="hashtag"></p>
@@ -193,9 +206,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
-<script src="js/art.js?v=202610200106"></script>
-<script src="js/couple.js?v=202610200106"></script>
-<script src="js/mandap.js?v=202610200106"></script>
-<script src="js/main.js?v=202610200106"></script>
+<script src="js/art.js?v=202610200115"></script>
+<script src="js/couple.js?v=202610200115"></script>
+<script src="js/mandap.js?v=202610200115"></script>
+<script src="js/main.js?v=202610200115"></script>
 </body>
 </html>
