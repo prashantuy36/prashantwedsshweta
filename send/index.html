@@ -93,7 +93,7 @@ summary { cursor: pointer; font-family: var(--f-caps); font-size: 12px; letter-s
         </div>
         <button class="btn" type="submit">Create link</button>
       </div>
-      <p class="hint">They'll see “Dear Sharma Family, you are invited” when they open it.</p>
+      <p class="hint">They'll see “Dear Sharma Family, you are invited” when they open it. The name is hidden inside the link.</p>
     </form>
     <form id="manyForm" data-panel="many" hidden>
       <label for="many">One name per line</label>
@@ -174,12 +174,10 @@ Upadhyay & Choudhary families`;
   $("#resetMsg").addEventListener("click", () => { msgBox.value = defaultMsg(); store.set("send-msg", null); render(); });
 
   // a name becomes part of the link: spaces → hyphens, characters that would break a link are removed
-  const slug = (name) => name.trim().replace(/[&?#/\\%]+/g, " and ").replace(/\s+/g, " ").trim().replace(/ /g, "-");
-  const linkFor = (g) => {
-    const q = new URLSearchParams({ guest: slug(g.name) });
-    if (g.side) q.set("side", g.side);
-    return SITE + "?" + q.toString().replace(/%2D/gi, "-");
-  };
+  // the name (and side) are packed into a short code so they can't be read in the WhatsApp message
+  const encode = (txt) => { let bin = ""; new TextEncoder().encode(txt).forEach((b) => (bin += String.fromCharCode(b)));
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
+  const linkFor = (g) => SITE + "?i=" + encode(g.name.trim() + (g.side ? "\u0001" + g.side : ""));
   const message = (g) => msgBox.value.replace(/\{name\}/g, g.name.trim()).replace(/\{link\}/g, linkFor(g));
   const SIDE = { groom: "Groom's side", bride: "Bride's side" };
 
@@ -196,7 +194,7 @@ Upadhyay & Choudhary families`;
       return `<article class="guest${g.sent ? " sent" : ""}" data-i="${i}">
         <div class="guest__top"><span class="guest__name">${esc(g.name)}${g.side ? `<span class="guest__side">${SIDE[g.side]}</span>` : ""}</span>
           <button class="x" type="button" data-act="del" aria-label="Remove ${esc(g.name)}">×</button></div>
-        <a class="guest__link" href="${esc(url)}" target="_blank" rel="noopener">${esc(decodeURI(url).replace(/^https?:\/\//, ""))}</a>
+        <a class="guest__link" href="${esc(url)}" target="_blank" rel="noopener">${esc(url.replace(/^https?:\/\//, ""))}</a>
         <div class="guest__actions">
           <a class="btn wa small" data-act="wa" href="https://wa.me/?text=${encodeURIComponent(message(g))}" target="_blank" rel="noopener">${ICON_WA}WhatsApp</a>
           <button class="btn ghost small" type="button" data-act="copymsg">Copy message</button>

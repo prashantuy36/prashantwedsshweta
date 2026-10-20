@@ -34,6 +34,32 @@
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const params = new URLSearchParams(location.search);
+  /* ---------- personal invitation: ?i=<code> (name hidden in the link) or the older ?guest=Name ----------
+     The name is read once, kept for this visit (so a refresh still greets them), and the address bar is
+     cleaned to just the site address. */
+  const INV = (function () {
+    let name = "", side = "";
+    const code = params.get("i");
+    if (code) {
+      try {
+        const b64 = code.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((code.length + 3) % 4);
+        const txt = new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
+        [name, side = ""] = txt.split("\u0001");
+      } catch (e) {}
+    } else if (params.get("guest")) {
+      name = params.get("guest").replace(/[-_+]/g, " ");
+    }
+    try {
+      if (name) sessionStorage.setItem("invite-guest", JSON.stringify({ name, side }));
+      else ({ name = "", side = "" } = JSON.parse(sessionStorage.getItem("invite-guest") || "{}"));
+    } catch (e) {}
+    if (params.has("i") || params.has("guest") || params.has("side")) {
+      const keep = new URLSearchParams(location.search); ["i", "guest", "side"].forEach((k) => keep.delete(k));
+      const q = keep.toString();
+      try { history.replaceState(null, "", location.pathname.replace(/index\.html$/, "") + (q ? "?" + q : "") + location.hash); } catch (e) {}
+    }
+    return { name: String(name).trim().slice(0, 80), side: side === "groom" || side === "bride" ? side : "" };
+  })();
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const get = (path) => path.split(".").reduce((o, k) => (o ? o[k] : undefined), C);
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; };
@@ -149,8 +175,7 @@
     // phone numbers for "Need help on the way?": the senders (or a "contacts" list, if one is given)
     const CONTACTS = (C.contacts && C.contacts.length) ? C.contacts.map((c) => ({ name: c.name, phones: c.phones || [c.phone] }))
       : FAM.filter((f) => f.sender && f.sender.name).map((f) => ({ name: `${f.sender.name}${f.sender.role ? ` (${f.sender.role})` : ""}`, phones: f.sender.phones || [], vc: { name: f.sender.name, role: f.sender.role, address: f.sender.address, phones: f.sender.phones } }));
-    const guest = params.get("guest");
-    if (guest) $("#greet").textContent = tr("greetGuest", { guest: guest.replace(/[-_+]/g, " ") });
+    if (INV.name) $("#greet").textContent = tr("greetGuest", { guest: INV.name });
     function saveContact(c) {
       const [first, ...rest] = String(c.name).split(" ");
       const vcf = ["BEGIN:VCARD", "VERSION:3.0", `N:${rest.join(" ")};${first};;;`, `FN:${c.name}`,
@@ -302,7 +327,7 @@
     });
 
     /* ---------- events: diya trail ---------- */
-    const side = (params.get("side") || "").toLowerCase();
+    const side = (INV.side || params.get("side") || "").toLowerCase();
     const events = C.events.filter((e) => !side || e.side === "both" || e.side === side);
     const dayFmt = (s) => new Date(s).toLocaleDateString(tr("locale") || "en-IN", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
     const gcal = (e) => {
