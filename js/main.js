@@ -159,8 +159,8 @@
     const callBtns = (c, i) => {
       const ph = (c.phones || []).filter(Boolean);
       if (!ph.length) return "";
-      return ph.map((p, k) => `<a class="cbtn" href="tel:${esc(digits(p))}">${ICON_CALL}${esc(k ? tr("callAlt") : tr("call"))}</a>`).join("") +
-        `<button type="button" class="cbtn cbtn--save" data-vcard="${i}">${ICON_SAVE}${esc(tr("saveContact"))}</button>`;
+      // only "Save contact": it adds the name, both numbers and the address to the guest's phone
+      return `<button type="button" class="cbtn" data-vcard="${i}">${ICON_SAVE}${esc(tr("saveContact"))}</button>`;
     };
     $("#families").innerHTML = FAM.map((f) => {
       const s = f.sender || {};
