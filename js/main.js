@@ -175,7 +175,14 @@
     // phone numbers for "Need help on the way?": the senders (or a "contacts" list, if one is given)
     const CONTACTS = (C.contacts && C.contacts.length) ? C.contacts.map((c) => ({ name: c.name, phones: c.phones || [c.phone] }))
       : FAM.filter((f) => f.sender && f.sender.name).map((f) => ({ name: `${f.sender.name}${f.sender.role ? ` (${f.sender.role})` : ""}`, phones: f.sender.phones || [], vc: { name: f.sender.name, role: f.sender.role, address: f.sender.address, phones: f.sender.phones } }));
-    if (INV.name) $("#greet").textContent = tr("greetGuest", { guest: INV.name });
+    if (INV.name) {
+      // personal link: the family's name in the big handwriting font, and again on the last page
+      const g = /^(dear|respected|pranam|namaste)\b/i.test(INV.name) ? INV.name : `Dear ${INV.name}`;
+      $("#greet").innerHTML = `<span class="greet__name">${esc(g)}</span><span class="greet__sub">${esc(tr("greetSub") || "you are cordially invited to the wedding of")}</span>`;
+      $("#greet").classList.add("is-guest");
+      $("#closingGuest").textContent = tr("closeGuest", { guest: INV.name }) || `We look forward to seeing you, ${INV.name}`;
+      $("#closingGuest").hidden = false;
+    }
     function saveContact(c) {
       const [first, ...rest] = String(c.name).split(" ");
       const vcf = ["BEGIN:VCARD", "VERSION:3.0", `N:${rest.join(" ")};${first};;;`, `FN:${c.name}`,

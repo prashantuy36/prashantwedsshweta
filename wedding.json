@@ -212,7 +212,14 @@
     }
   ],
   "_8": "==================== MUSIC ====================  Put your songs in assets/music/ and list their paths, e.g. [\"assets/music/1.mp3\", \"assets/music/2.mp3\"] (mp3 or m4a). Each visit plays one song picked at random. Leave \"\" for no music. It starts when the guest taps the seal; a button lets them pause it.",
-  "music": ["assets/music/0.mp3", "assets/music/1.mp3", "assets/music/2.mp3", "assets/music/3.mp3", "assets/music/4.mp3", "assets/music/5.mp3"],
+  "music": [
+    "assets/music/0.mp3",
+    "assets/music/1.mp3",
+    "assets/music/2.mp3",
+    "assets/music/3.mp3",
+    "assets/music/4.mp3",
+    "assets/music/5.mp3"
+  ],
   "_10": "==================== OPTIONAL PAINTED PICTURES ====================  Leave \"\" to keep the cartoon couple. To use your own illustration in a story scene, put the file in assets/images/ and write its path (scenes in order: getting married, blessings, groom, bride, save the date; namaste = closing).",
   "art": {
     "story": [
@@ -288,7 +295,9 @@
       "sender": "Invitation from",
       "call": "Call",
       "callAlt": "2nd number",
-      "saveContact": "Save contact"
+      "saveContact": "Save contact",
+      "greetSub": "you are cordially invited to the wedding of",
+      "closeGuest": "We look forward to seeing you, {guest}"
     }
   }
 }
