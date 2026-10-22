@@ -553,6 +553,19 @@
       }));
     }
 
+    /* ---------- every page after the story arrives softly too: headings, cards and stamps fade up as they come into view ---------- */
+    const revealEls = $$(".sec-head, .stop, .stamp, .helpline, .night__inner > *, .closing__inner > *, .fam");
+    revealEls.forEach((e) => e.classList.add("reveal"));
+    if ("IntersectionObserver" in window && !reduce) {
+      const rio = new IntersectionObserver((ens) => ens.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const sibs = [...en.target.parentElement.children].filter((c) => c.classList.contains("reveal"));
+        en.target.style.transitionDelay = `${Math.min(sibs.indexOf(en.target), 4) * .12}s`;
+        en.target.classList.add("in"); rio.unobserve(en.target);
+      }), { rootMargin: "0px 0px -8% 0px", threshold: .12 });
+      revealEls.forEach((e) => rio.observe(e));
+    } else revealEls.forEach((e) => e.classList.add("in"));
+
     /* ---------- Previous / Next buttons: one tap = one page (scrolling still works too) ----------
        Pages: the 5 story scenes, then Events, Things to know, Countdown and the closing page. */
     const PAGE_SECTIONS = ["events", "know", "countdown", "closing"].map((id) => $("#" + id)).filter(Boolean);

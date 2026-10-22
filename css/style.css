@@ -1038,3 +1038,15 @@ body { font-size: clamp(14.5px, .45vw + 12.5px, 17px); line-height: 1.6; }
 .stage.entering .pair { opacity: 0 !important; transform: translateX(-50%) translateY(40px) !important; transition: none !important; }
 /* calmer change from one story page to the next */
 .scene > * { transition: filter 1.3s ease, opacity 1.3s ease; }
+
+/* soft arrival for every page after the story */
+.reveal { opacity: 0; transform: translateY(26px); filter: blur(4px); transition: opacity 1.1s ease, transform 1.2s cubic-bezier(.22,.7,.3,1), filter 1.1s ease; }
+.reveal.in { opacity: 1; transform: none; filter: none; }
+.stamp.reveal.in { transform: rotate(var(--tilt)); }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; filter: none; } }
+/* story pages: the couple gives a gentle bob instead of a jump when the page changes */
+.pair.hop svg { animation: softhop 1.3s cubic-bezier(.4,0,.3,1) !important; }
+@keyframes softhop { 0% { transform: translateY(0); } 45% { transform: translateY(-7px); } 100% { transform: translateY(0); } }
+.stamp.reveal { filter: blur(4px) drop-shadow(0 10px 14px rgba(90,40,30,.22)); }
+.stamp.reveal.in { filter: drop-shadow(0 10px 14px rgba(90,40,30,.22)); }
+.pn { white-space: nowrap; }
