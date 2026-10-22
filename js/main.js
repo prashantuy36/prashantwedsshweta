@@ -566,60 +566,14 @@
       revealEls.forEach((e) => rio.observe(e));
     } else revealEls.forEach((e) => e.classList.add("in"));
 
-    /* ---------- Previous / Next buttons: one tap = one page (scrolling still works too) ----------
-       Pages: the 5 story scenes, then Events, Things to know, Countdown and the closing page. */
-    const PAGE_SECTIONS = ["events", "know", "countdown", "closing"].map((id) => $("#" + id)).filter(Boolean);
-    const pageTops = () => {
-      const u = sceneLen(), y0 = story.offsetTop;
-      return [...scenes.map((_, k) => Math.round(y0 + (k ? k * u + u * .35 : 0))), ...PAGE_SECTIONS.map((sec) => sec.offsetTop)];
-    };
-    const prevBtn = $("#prevBtn"), nextBtn = $("#nextBtn"), pageNo = $("#pageNo");
-    let glideRaf = 0, gliding = false;
-    function currentPage() {
-      const tops = pageTops(), y = scrollY + 12;
-      let k = 0; tops.forEach((t, i) => { if (y >= t - 2) k = i; });
-      // at the very bottom of the page, count it as the last page
-      if (scrollY + innerHeight >= document.documentElement.scrollHeight - 4) k = tops.length - 1;
-      return k;
-    }
-    function showPage() {
-      const k = currentPage(), n = pageTops().length;
-      pageNo.textContent = `${k + 1} / ${n}`;
-      prevBtn.disabled = k === 0;
-      nextBtn.querySelector("span").textContent = k === n - 1 ? "Start again" : "Next";
-    }
-    function glideTo(target) {
-      cancelAnimationFrame(glideRaf);
-      const root = document.documentElement, from = scrollY;
-      const to = Math.max(0, Math.min(target, root.scrollHeight - innerHeight)), dist = Math.abs(to - from);
-      if (dist < 2) return;
-      const ms = reduce ? 1 : Math.min(1700, Math.max(1000, dist * .5));
-      const t0 = performance.now(); gliding = true;
-      root.style.scrollBehavior = "auto"; root.style.scrollSnapType = "none";   // no snapping while we glide
-      const ease = (k) => (k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
-      const step = (t) => {
-        const k = Math.min(1, (t - t0) / ms);
-        scrollTo(0, from + (to - from) * ease(k));
-        if (k < 1) glideRaf = requestAnimationFrame(step);
-        else { gliding = false; root.style.scrollSnapType = ""; showPage(); }
-      };
-      glideRaf = requestAnimationFrame(step);
-    }
-    // a finger or wheel always wins over a glide in progress
-    ["touchstart", "wheel"].forEach((ev) => addEventListener(ev, () => { if (gliding) { cancelAnimationFrame(glideRaf); gliding = false; document.documentElement.style.scrollSnapType = ""; } }, { passive: true }));
-    nextBtn.addEventListener("click", () => {
-      const tops = pageTops(), k = currentPage();
-      glideTo(k >= tops.length - 1 ? 0 : tops[k + 1]);
-    });
-    prevBtn.addEventListener("click", () => { const tops = pageTops(), k = currentPage(); if (k > 0) glideTo(tops[k - 1]); });
-    addEventListener("keydown", (e) => {
-      if (document.body.classList.contains("locked") || /input|textarea/i.test(e.target.tagName)) return;
-      if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); nextBtn.click(); }
-      if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); prevBtn.click(); }
-    });
-    let pageRaf = 0;
-    addEventListener("scroll", () => { cancelAnimationFrame(pageRaf); pageRaf = requestAnimationFrame(showPage); }, { passive: true });
-    addEventListener("resize", showPage);
-    showPage();
+    /* ---------- dock highlight ---------- */
+    const dockMap = { home: "home", events: "events", know: "know", countdown: "know", closing: "know" };
+    const dockLinks = $$(".dock a");
+    const io = new IntersectionObserver((ens) => ens.forEach((en) => {
+      if (!en.isIntersecting) return;
+      const key = dockMap[en.target.id];
+      dockLinks.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === `#${key}`));
+    }), { rootMargin: "-45% 0px -50% 0px" });
+    $$("main > section").forEach((s) => io.observe(s));
   });
 })();
