@@ -6,8 +6,10 @@
  *
  * SETUP (once):
  *   1. In the Google Sheet: Extensions → Apps Script. Delete what's there, paste this whole file, Save.
- *   2. Project Settings (gear icon) → Script properties → Add property:
- *        Property: PASSCODE     Value: (the passcode the families will type on /send)
+ *   2. Project Settings (gear icon) → Script properties → Add property (one row each):
+ *        PASSCODE_GROOM   → passcode for the Upadhyay family (sees and edits only the groom's side)
+ *        PASSCODE_BRIDE   → passcode for the Choudhary family (sees and edits only the bride's side)
+ *        PASSCODE         → (optional) passcode for the couple: both sides, everything
  *   3. Deploy → New deployment → type "Web app"
  *        Execute as: Me        Who has access: Anyone
  *      → Deploy → Authorise access (choose your Google account → Advanced → Go to project → Allow).
@@ -49,15 +51,18 @@ function handle_(p) {
       return out_({ ok: true, times: times });
     }
 
-    // ---- everything else needs the passcode ----
-    const pass = PropertiesService.getScriptProperties().getProperty('PASSCODE') || '';
-    if (!pass || String(p.passcode || '') !== pass) return out_({ ok: false, error: 'passcode' });
+    // ---- everything else needs a passcode; it decides which side of the list you may see ----
+    const role = role_(p.passcode);
+    if (!role) return out_({ ok: false, error: 'passcode' });
+    const mine = (r) => role === 'all' || String(r.Side) === role;
 
-    if (p.action === 'list') return out_({ ok: true, rows: rows_(sh) });
+    if (p.action === 'list') return out_({ ok: true, role: role, rows: rows_(sh).filter(mine) });
 
     if (p.action === 'save') {
       const g = p.guest || {};
+      if (role !== 'all') g.Side = role;                       // a family can only add to its own side
       const r = g.ID ? rows_(sh).find((x) => String(x.ID) === String(g.ID)) : null;
+      if (r && !mine(r)) return out_({ ok: false, error: 'not your side' });
       if (!r) {
         g.ID = g.ID || Utilities.getUuid().replace(/-/g, '').slice(0, 10);
         g['Added On'] = now; g['Updated On'] = now;
@@ -72,6 +77,7 @@ function handle_(p) {
 
     if (p.action === 'saveMany') {      // used once, to move an old list from a phone into the sheet
       (p.guests || []).forEach((g) => {
+        if (role !== 'all') g.Side = role;
         g.ID = g.ID || Utilities.getUuid().replace(/-/g, '').slice(0, 10);
         g['Added On'] = now; g['Updated On'] = now; g['Times Opened'] = 0;
         sh.appendRow(HEAD.map((k) => value_(k, g[k])));
@@ -81,6 +87,7 @@ function handle_(p) {
 
     if (p.action === 'delete') {
       const r = rows_(sh).find((x) => String(x.ID) === String(p.id));
+      if (r && !mine(r)) return out_({ ok: false, error: 'not your side' });
       if (r) sh.deleteRow(r._row);
       return out_({ ok: true });
     }
@@ -88,6 +95,17 @@ function handle_(p) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// which passcode was typed: 'all' (both sides), 'groom', 'bride' — or '' if none matches
+function role_(code) {
+  code = String(code || '').trim();
+  if (!code) return '';
+  const props = PropertiesService.getScriptProperties();
+  if (code === (props.getProperty('PASSCODE') || '')) return 'all';
+  if (code === (props.getProperty('PASSCODE_GROOM') || '')) return 'groom';
+  if (code === (props.getProperty('PASSCODE_BRIDE') || '')) return 'bride';
+  return '';
 }
 
 function sheet_() {

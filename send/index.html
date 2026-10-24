@@ -104,7 +104,7 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
 <section class="lock card" id="lock" hidden>
   <div id="lockPass">
     <h2>Shared guest list</h2>
-    <p style="font-size:14px;margin-bottom:6px">Enter the family passcode to see and update the list.</p>
+    <p style="font-size:14px;margin-bottom:6px">Enter your family's passcode to see and update your side of the list.</p>
     <form id="passForm">
       <label for="pass">Passcode</label>
       <input id="pass" type="password" autocomplete="current-password" required>
@@ -120,7 +120,7 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
     <ol>
       <li>Create a new Google Sheet.</li>
       <li>Extensions → Apps Script → paste the code from <code>setup/guest-sheet.gs</code> → Save.</li>
-      <li>Project Settings → Script properties → add <code>PASSCODE</code> with your passcode.</li>
+      <li>Project Settings → Script properties → add <code>PASSCODE_GROOM</code>, <code>PASSCODE_BRIDE</code> (and optionally <code>PASSCODE</code> for both sides).</li>
       <li>Deploy → New deployment → Web app → Execute as <b>Me</b>, access <b>Anyone</b> → Deploy.</li>
       <li>Put the Web app URL in <code>wedding.json</code> → <code>guestSheet.url</code>.</li>
     </ol>
@@ -240,6 +240,7 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
       setSync("busy", "Loading…");
       const j = await api.call({ action: "list" });
       setSync("ok", "Shared list · up to date");
+      setRole(j.role || "all");
       return j.rows || [];
     },
     async save(g) {
@@ -255,6 +256,15 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
       return api.call({ action: "delete", id });
     }
   };
+  // a family's passcode only opens its own side: lock the dropdown and the form to that side
+  let ROLE = "all";
+  function setRole(role) {
+    ROLE = role;
+    [...$("#sideSel").options].forEach((o) => (o.hidden = role !== "all" && o.value !== role));
+    [...$("#fSide").options].forEach((o) => (o.hidden = role !== "all" && o.value !== role));
+    if (role !== "all") { $("#sideSel").value = role; $("#sideSel").disabled = true; }
+    else $("#sideSel").disabled = false;
+  }
   function setSync(cls, text) { const s = $("#sync"); s.className = "sync " + cls; s.lastElementChild.textContent = text; }
 
   /* ---------- the personal link: name · side · greeting · id, packed so the name can't be read ---------- */
@@ -343,7 +353,7 @@ Upadhyay & Choudhary families`;
     editing = g || null;
     $("#formTitle").textContent = g ? "Edit family" : "Add a family";
     $("#fName").value = g ? g.Name : "";
-    $("#fSide").value = g ? g.Side : ($("#sideSel").value || store.get("gl-lastside", "groom"));
+    $("#fSide").value = ROLE !== "all" ? ROLE : g ? g.Side : ($("#sideSel").value || store.get("gl-lastside", "groom"));
     $("#fGreet").value = g ? (g.Greeting || "Dear") : "Dear";
     $("#fPhones").value = g ? phones(g).join("\n") : "";
     $("#fCity").value = g ? g.City || "" : "";
@@ -400,7 +410,7 @@ Upadhyay & Choudhary families`;
   msgBox.addEventListener("input", () => { store.set("gl-msg", msgBox.value); render(); });
   $("#resetMsg").addEventListener("click", () => { store.set("gl-msg", null); msgBox.value = defaultMsg(); render(); });
   $("#refresh").addEventListener("click", () => reload());
-  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); showLock(); });
+  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); rows = []; setRole("all"); showLock(); });
   $("#csv").addEventListener("click", () => {
     const cols = ["Name", "Side", "Greeting", "Phones", "City", "Guests", "Notes", "Sent", "Sent To", "Sent On", "Sent By", "Times Opened", "Last Opened", "Last Song", "Link"];
     const out = [cols, ...rows.map((g) => cols.map((c) => c === "Link" ? linkFor(g) : c === "Side" ? SIDE[g.Side] || g.Side : g[c] ?? ""))];
@@ -430,7 +440,7 @@ Upadhyay & Choudhary families`;
   }
   async function start() {
     $("#lock").hidden = true; $("#app").hidden = false;
-    $("#sideSel").value = store.get("gl-view#sideSel", ""); $("#filter").value = store.get("gl-view#filter", "");
+    if (ROLE === "all") $("#sideSel").value = store.get("gl-view#sideSel", ""); $("#filter").value = store.get("gl-view#filter", "");
     setSync(mode === "local" ? "" : "busy", mode === "local" ? "Saved on this phone only" : "Loading…");
     await reload();
     offerImport();
