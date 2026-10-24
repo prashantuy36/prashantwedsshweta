@@ -169,17 +169,13 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
         <label for="oneName">Family / guest name</label>
         <div class="inrow"><input id="oneName" type="text" placeholder="e.g. Sharma Family" autocomplete="off" required>
           <button class="btn" type="submit">Create link</button></div>
-        <label for="onePhone">WhatsApp number <small>(optional: WhatsApp then opens their chat directly)</small></label>
-        <input id="onePhone" type="tel" placeholder="e.g. 98765 43210" autocomplete="off">
       </form>
       <form id="manyForm" data-panel="many" hidden>
-        <label for="many">One family per line <small>(add a number after a comma if you like)</small></label>
-        <textarea id="many" placeholder="Sharma Family, 98765 43210&#10;Gupta Ji and Family&#10;Rohit Bhaiya&#10;Mishra Uncle and Aunty"></textarea>
+        <label for="many">One family per line</label>
+        <textarea id="many" placeholder="Sharma Family&#10;Gupta Ji and Family&#10;Rohit Bhaiya&#10;Mishra Uncle and Aunty"></textarea>
         <div class="modal__foot" style="justify-content:flex-start"><button class="btn" type="submit">Create all links</button></div>
       </form>
       <div class="grid2">
-        <div><label for="addGreet">Greeting on their invitation</label>
-          <select id="addGreet"><option>Dear</option><option>Respected</option><option>Pranam</option><option>Namaste</option><option value="-">Just the name</option></select></div>
         <div id="addSideWrap"><label for="addSide">Side</label>
           <select id="addSide"><option value="groom">Groom's side (Upadhyay)</option><option value="bride">Bride's side (Choudhary)</option></select></div>
       </div>
@@ -404,7 +400,7 @@ Upadhyay & Choudhary families`;
     document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.tab));
   }));
   async function quickAdd(entries) {
-    const side = ROLE !== "all" ? ROLE : $("#addSide").value, greet = $("#addGreet").value, who = store.get("gl-who", "");
+    const side = ROLE !== "all" ? ROLE : $("#addSide").value, greet = "Dear", who = store.get("gl-who", "");
     store.set("gl-lastside", side);
     const fresh = entries.map(([name, phone]) => [String(name || "").trim(), String(phone || "").trim()]).filter(([n]) => n)
       .filter(([n]) => !rows.some((g) => String(g.Name).toLowerCase() === n.toLowerCase() && g.Side === side))
@@ -414,7 +410,7 @@ Upadhyay & Choudhary families`;
     try { if (fresh.length === 1) await api.save(fresh[0]); else await api.saveMany(fresh); toast(fresh.length === 1 ? "Link created" : `${fresh.length} links created`); }
     catch (e) { toast("Not saved. Please check the internet and try again."); reload(true); }
   }
-  $("#oneForm").addEventListener("submit", (e) => { e.preventDefault(); quickAdd([[$("#oneName").value, $("#onePhone").value]]); $("#oneName").value = ""; $("#onePhone").value = ""; $("#oneName").focus(); });
+  $("#oneForm").addEventListener("submit", (e) => { e.preventDefault(); quickAdd([[$("#oneName").value, ""]]); $("#oneName").value = ""; $("#oneName").focus(); });
   $("#manyForm").addEventListener("submit", (e) => { e.preventDefault();
     quickAdd($("#many").value.split(/\n+/).map((l) => { const m = l.match(/^(.*?)(?:,\s*([+\d][\d\s-]{6,}))?\s*$/); return m ? [m[1], m[2] || ""] : [l, ""]; }));
     $("#many").value = ""; });
