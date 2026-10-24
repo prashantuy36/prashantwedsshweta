@@ -87,6 +87,11 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
 @media (min-width: 640px) { .modal { place-items: center; } .modal > .card { border-radius: 20px; } }
 .modal h2 { font-size: 16px; color: var(--maroon); }
 .modal__foot { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 4px; }
+.tabs button { flex: 1; font: 600 13px var(--f); padding: 9px; border-radius: 999px; border: 1px solid rgba(139,30,43,.25); background: transparent; color: var(--maroon); cursor: pointer; }
+.tabs button[aria-selected=true] { background: var(--maroon); color: #FFF2DA; border-color: var(--maroon); }
+.inrow { display: flex; gap: 8px; } .inrow input { flex: 1; }
+.g__link { font-size: 12.5px; color: var(--maroon); word-break: break-all; text-decoration: none; border-bottom: 1px dotted rgba(139,30,43,.4); justify-self: start; }
 [hidden] { display: none !important; }
 @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } .stat b { font-size: 16px; } }
 </style>
@@ -153,6 +158,34 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
       <button class="btn small" type="button" id="importBtn">Add them to this list</button>
     </div>
 
+    <!-- the simple way to make links (as before): one family, or a whole list at once -->
+    <section class="card" aria-labelledby="addH">
+      <h2 id="addH">Create invitation links</h2>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="true" data-tab="one">One family</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="many">Many at once</button>
+      </div>
+      <form id="oneForm" data-panel="one">
+        <label for="oneName">Family / guest name</label>
+        <div class="inrow"><input id="oneName" type="text" placeholder="e.g. Sharma Family" autocomplete="off" required>
+          <button class="btn" type="submit">Create link</button></div>
+        <label for="onePhone">WhatsApp number <small>(optional: WhatsApp then opens their chat directly)</small></label>
+        <input id="onePhone" type="tel" placeholder="e.g. 98765 43210" autocomplete="off">
+      </form>
+      <form id="manyForm" data-panel="many" hidden>
+        <label for="many">One family per line <small>(add a number after a comma if you like)</small></label>
+        <textarea id="many" placeholder="Sharma Family, 98765 43210&#10;Gupta Ji and Family&#10;Rohit Bhaiya&#10;Mishra Uncle and Aunty"></textarea>
+        <div class="modal__foot" style="justify-content:flex-start"><button class="btn" type="submit">Create all links</button></div>
+      </form>
+      <div class="grid2">
+        <div><label for="addGreet">Greeting on their invitation</label>
+          <select id="addGreet"><option>Dear</option><option>Respected</option><option>Pranam</option><option>Namaste</option><option value="-">Just the name</option></select></div>
+        <div id="addSideWrap"><label for="addSide">Side</label>
+          <select id="addSide"><option value="groom">Groom's side (Upadhyay)</option><option value="bride">Bride's side (Choudhary)</option></select></div>
+      </div>
+      <p class="g__note" style="margin-top:8px">They'll see “Dear Sharma Family” when they open it. The name is hidden inside the link.</p>
+    </section>
+
     <div class="toolbar">
       <input type="text" id="q" placeholder="Search name, city or number…" aria-label="Search">
       <select id="filter" aria-label="Show">
@@ -161,10 +194,10 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
         <option value="sentnotopen">Sent, not opened</option>
         <option value="opened">Opened</option>
       </select>
-      <button class="btn" type="button" id="addBtn">+ Add family</button>
     </div>
 
     <section class="card" aria-label="Families">
+      <h2>Your invitation links</h2>
       <div id="list"></div>
     </section>
 
@@ -262,6 +295,8 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
     ROLE = role;
     [...$("#sideSel").options].forEach((o) => (o.hidden = role !== "all" && o.value !== role));
     [...$("#fSide").options].forEach((o) => (o.hidden = role !== "all" && o.value !== role));
+    $("#addSideWrap").hidden = role !== "all";
+    if (role === "all") $("#addSide").value = store.get("gl-lastside", "groom");
     if (role !== "all") { $("#sideSel").value = role; $("#sideSel").disabled = true; }
     else $("#sideSel").disabled = false;
   }
@@ -324,12 +359,14 @@ Upadhyay & Choudhary families`;
         <div class="g__top"><div class="g__name">${greet}${esc(g.Name)}<span class="tag ${g.Side === "bride" ? "bride" : "groom"}">${SIDE[g.Side] || ""}</span></div>
           <button class="x" type="button" data-act="del" aria-label="Delete ${esc(g.Name)}">×</button></div>
         ${meta ? `<div class="g__meta">${esc(meta)}</div>` : ""}
+        <a class="g__link" href="${esc(linkFor(g))}" target="_blank" rel="noopener">${esc(linkFor(g).replace(/^https?:\/\//, ""))}</a>
         <div class="chips">${chips}</div>
         ${g.Notes ? `<div class="g__note">${esc(g.Notes)}</div>` : ""}
         <div class="g__actions">${wa}
           <button class="btn ghost small" type="button" data-act="copymsg">Copy message</button>
           <button class="btn ghost small" type="button" data-act="copy">Copy link</button>
-          <button class="btn ghost small" type="button" data-act="edit">Edit</button>
+          ${navigator.share ? '<button class="btn ghost small" type="button" data-act="share">Share…</button>' : ""}
+          <button class="btn ghost small" type="button" data-act="edit">More details</button>
           <button class="btn ghost small" type="button" data-act="sent">${g.Sent ? "Mark not sent" : "Mark sent"}</button>
         </div>
       </article>`;
@@ -351,7 +388,7 @@ Upadhyay & Choudhary families`;
   /* ---------- add / edit ---------- */
   function openForm(g) {
     editing = g || null;
-    $("#formTitle").textContent = g ? "Edit family" : "Add a family";
+    $("#formTitle").textContent = g ? "More details" : "Add a family";
     $("#fName").value = g ? g.Name : "";
     $("#fSide").value = ROLE !== "all" ? ROLE : g ? g.Side : ($("#sideSel").value || store.get("gl-lastside", "groom"));
     $("#fGreet").value = g ? (g.Greeting || "Dear") : "Dear";
@@ -361,7 +398,26 @@ Upadhyay & Choudhary families`;
     $("#fNotes").value = g ? g.Notes || "" : "";
     $("#modal").hidden = false; setTimeout(() => $("#fName").focus(), 50);
   }
-  $("#addBtn").addEventListener("click", () => openForm(null));
+  /* ---------- quick add: one family, or many at once ---------- */
+  document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+    document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.tab));
+  }));
+  async function quickAdd(entries) {
+    const side = ROLE !== "all" ? ROLE : $("#addSide").value, greet = $("#addGreet").value, who = store.get("gl-who", "");
+    store.set("gl-lastside", side);
+    const fresh = entries.map(([name, phone]) => [String(name || "").trim(), String(phone || "").trim()]).filter(([n]) => n)
+      .filter(([n]) => !rows.some((g) => String(g.Name).toLowerCase() === n.toLowerCase() && g.Side === side))
+      .map(([name, phone]) => { const g = { ID: newId(), Name: name, Side: side, Greeting: greet, Phones: phone, "Added By": who, "Times Opened": 0 }; g.Link = linkFor(g); return g; });
+    if (!fresh.length) return toast("Already in your list");
+    rows.push(...fresh); render();
+    try { if (fresh.length === 1) await api.save(fresh[0]); else await api.saveMany(fresh); toast(fresh.length === 1 ? "Link created" : `${fresh.length} links created`); }
+    catch (e) { toast("Not saved. Please check the internet and try again."); reload(true); }
+  }
+  $("#oneForm").addEventListener("submit", (e) => { e.preventDefault(); quickAdd([[$("#oneName").value, $("#onePhone").value]]); $("#oneName").value = ""; $("#onePhone").value = ""; $("#oneName").focus(); });
+  $("#manyForm").addEventListener("submit", (e) => { e.preventDefault();
+    quickAdd($("#many").value.split(/\n+/).map((l) => { const m = l.match(/^(.*?)(?:,\s*([+\d][\d\s-]{6,}))?\s*$/); return m ? [m[1], m[2] || ""] : [l, ""]; }));
+    $("#many").value = ""; });
   $("#cancel").addEventListener("click", () => ($("#modal").hidden = true));
   $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") $("#modal").hidden = true; });
   $("#form").addEventListener("submit", (e) => {
@@ -390,6 +446,7 @@ Upadhyay & Choudhary families`;
     if (act === "copy") copy(linkFor(g), "Link copied");
     if (act === "copymsg") copy(message(g), "Message copied");
     if (act === "edit") openForm(g);
+    if (act === "share") navigator.share({ text: message(g) }).then(() => saveRow({ ID: g.ID, Sent: "Yes", "Sent On": new Date().toISOString(), "Sent By": store.get("gl-who", "") })).catch(() => {});
     if (act === "sent") saveRow(g.Sent ? { ID: g.ID, Sent: "", "Sent To": "", "Sent On": "", "Sent By": "" }
       : { ID: g.ID, Sent: "Yes", "Sent On": new Date().toISOString(), "Sent By": store.get("gl-who", "") });
     if (act === "del" && confirm(`Delete ${g.Name} from the list?`)) {
@@ -406,6 +463,7 @@ Upadhyay & Choudhary families`;
     toast(what);
   }
   ["#sideSel", "#filter"].forEach((s) => $(s).addEventListener("change", () => { store.set("gl-view" + s, $(s).value); render(); }));
+  $("#sideSel").addEventListener("change", () => { if ($("#sideSel").value) $("#addSide").value = $("#sideSel").value; });
   $("#q").addEventListener("input", render);
   msgBox.addEventListener("input", () => { store.set("gl-msg", msgBox.value); render(); });
   $("#resetMsg").addEventListener("click", () => { store.set("gl-msg", null); msgBox.value = defaultMsg(); render(); });
