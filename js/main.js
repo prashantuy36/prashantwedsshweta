@@ -38,27 +38,28 @@
      The name is read once, kept for this visit (so a refresh still greets them), and the address bar is
      cleaned to just the site address. */
   const INV = (function () {
-    let name = "", side = "";
+    let name = "", side = "", greet = "", id = "";
     const code = params.get("i");
     if (code) {
       try {
         const b64 = code.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((code.length + 3) % 4);
         const txt = new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
-        [name, side = ""] = txt.split("\u0001");
+        [name, side = "", greet = "", id = ""] = txt.split("\u0001");   // name · side · greeting · guest-list id
       } catch (e) {}
     } else if (params.get("guest")) {
       name = params.get("guest").replace(/[-_+]/g, " ");
     }
     try {
-      if (name) sessionStorage.setItem("invite-guest", JSON.stringify({ name, side }));
-      else ({ name = "", side = "" } = JSON.parse(sessionStorage.getItem("invite-guest") || "{}"));
+      if (name) sessionStorage.setItem("invite-guest", JSON.stringify({ name, side, greet, id }));
+      else ({ name = "", side = "", greet = "", id = "" } = JSON.parse(sessionStorage.getItem("invite-guest") || "{}"));
     } catch (e) {}
     if (params.has("i") || params.has("guest") || params.has("side")) {
       const keep = new URLSearchParams(location.search); ["i", "guest", "side"].forEach((k) => keep.delete(k));
       const q = keep.toString();
       try { history.replaceState(null, "", location.pathname.replace(/index\.html$/, "") + (q ? "?" + q : "") + location.hash); } catch (e) {}
     }
-    return { name: String(name).trim().slice(0, 80), side: side === "groom" || side === "bride" ? side : "" };
+    return { name: String(name).trim().slice(0, 80), side: side === "groom" || side === "bride" ? side : "",
+      greet: greet === "-" ? "" : String(greet || "").trim().slice(0, 20), hasGreet: !!greet, id: /^[\w-]{4,40}$/.test(id) ? id : "" };
   })();
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const get = (path) => path.split(".").reduce((o, k) => (o ? o[k] : undefined), C);
@@ -177,7 +178,8 @@
       : FAM.filter((f) => f.sender && f.sender.name).map((f) => ({ name: `${f.sender.name}${f.sender.role ? ` (${f.sender.role})` : ""}`, phones: f.sender.phones || [], vc: { name: f.sender.name, role: f.sender.role, address: f.sender.address, phones: f.sender.phones } }));
     if (INV.name) {
       // personal link: the family's name in the big handwriting font, and again on the last page
-      const g = /^(dear|respected|pranam|namaste)\b/i.test(INV.name) ? INV.name : `Dear ${INV.name}`;
+      const g = INV.hasGreet ? [INV.greet, INV.name].filter(Boolean).join(" ")
+        : /^(dear|respected|pranam|namaste)\b/i.test(INV.name) ? INV.name : `Dear ${INV.name}`;
       $("#greet").innerHTML = `<span class="greet__name">${esc(g)}</span><span class="greet__sub">${esc(tr("greetSub") || "you are cordially invited to the wedding of")}</span>`;
       $("#greet").classList.add("is-guest");
       $("#closingGuest").textContent = tr("closeGuest", { guest: INV.name }) || `We look forward to seeing you, ${INV.name}`;
@@ -478,23 +480,47 @@
     /* ---------- opening + music ---------- */
     const opening = $("#opening"), audio = $("#audio"), mBtn = $("#musicBtn");
     let musicOK = false;
-    // music: one path, or a list of songs. Every open or refresh picks a random song, never the
-    // same one as last time; only a language change (which reloads the page) keeps the current song.
+    // music: one path, or a list of songs. Every open picks a new song (never the same as last time).
+    // For a personal link from the guest list, "last time" comes from the Google Sheet, so the family
+    // hears the songs in turn even across phones; otherwise this phone remembers the last song.
     const songs = (Array.isArray(C.music) ? C.music : [C.music]).filter(Boolean);
+    const SHEET = (C.guestSheet && C.guestSheet.url) || "";
+    const TRACK = !!(SHEET && INV.id && C.guestSheet.trackOpens !== false);
+    const sheetCall = (body, ms) => {
+      const ctl = "AbortController" in window ? new AbortController() : null;
+      const t = ctl && setTimeout(() => ctl.abort(), ms || 4000);
+      return fetch(SHEET, { method: "POST", body: JSON.stringify(body), keepalive: true, signal: ctl ? ctl.signal : undefined })
+        .then((r) => r.json()).finally(() => t && clearTimeout(t));
+    };
+    const nextAfter = (last) => {
+      if (songs.length < 2) return songs[0];
+      const i = songs.indexOf(last);
+      return i >= 0 ? songs[(i + 1) % songs.length] : songs[Math.floor(Math.random() * songs.length)];
+    };
+    let pick = "", tapped = false;
+    const setSong = (src) => {
+      pick = src;
+      try { localStorage.setItem("invite-song", src); } catch (e) {}
+      audio.src = src;
+    };
     if (songs.length) {
       let last = null;
       try { last = localStorage.getItem("invite-song"); } catch (e) {}
-      let pick;
-      if (resume && songs.includes(last)) pick = last;
-      else {
-        const pool = songs.length > 1 ? songs.filter((x) => x !== last) : songs;
-        pick = pool[Math.floor(Math.random() * pool.length)];
-      }
-      try { localStorage.setItem("invite-song", pick); } catch (e) {}
       audio.preload = "metadata";
-      audio.addEventListener("loadedmetadata", () => { musicOK = true; mBtn.hidden = false; }, { once: true });
-      audio.src = pick;
+      audio.addEventListener("loadedmetadata", () => { musicOK = true; mBtn.hidden = false; });
+      setSong(resume && songs.includes(last) ? last : nextAfter(last));
+      // personal link: ask the guest list which song this family heard last, and play the next one
+      if (TRACK && !resume) sheetCall({ action: "peek", id: INV.id }, 2500).then((r) => {
+        if (!r || !r.ok || tapped) return;
+        const want = nextAfter(songs.find((x) => r.lastSong && x.endsWith(r.lastSong)) || r.lastSong);
+        if (want && want !== pick) setSong(want);
+      }).catch(() => {});
     }
+    // personal link: note in the guest list that the family opened the invitation (and which song played)
+    const recordOpen = () => {
+      if (!TRACK) return;
+      sheetCall({ action: "opened", id: INV.id, song: (pick || "").split("/").pop() }, 8000).catch(() => {});
+    };
     const setPlaying = (on) => mBtn.setAttribute("aria-pressed", String(on));
     // music only while the invitation is on screen: pause when the tab/app is hidden or the phone is locked,
     // and carry on when the guest comes back (unless they had paused it themselves)
@@ -529,7 +555,7 @@
     }
     if (resume) { open(true); requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = "auto"; scrollTo(0, resume.y || 0); }); }
     else if (hashed) { open(true); const t = document.querySelector(location.hash); if (t) t.scrollIntoView(); }
-    else $("#openBtn").addEventListener("click", () => open(false));
+    else $("#openBtn").addEventListener("click", () => { tapped = true; recordOpen(); open(false); });
 
     /* ---------- change language later: remember where the guest was and reload in the new language ---------- */
     const langBtn = $("#langBtn");

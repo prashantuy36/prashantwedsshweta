@@ -237,6 +237,11 @@
     ],
     "namaste": ""
   },
+  "_12": "==================== GUEST LIST (Google Sheet) ====================  url: the Web app URL of the guest-list Google Sheet script (see setup/guest-sheet.gs). The /send page keeps the shared list there, and personal links record each time a family opens their invitation (and play them a new song each time). Leave \"\" until it's set up. trackOpens: false turns off the open tracking.",
+  "guestSheet": {
+    "url": "",
+    "trackOpens": true
+  },
   "_11": "==================== WEBSITE WORDS ====================  Headings, buttons and labels of the website. {g} {b} {guest} {n} {a} are filled in automatically. You rarely need to change these.",
   "siteText": {
     "en": {

@@ -4,71 +4,91 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Invitation Links · Prashant & Shweta</title>
+<title>Guest List · Prashant & Shweta</title>
 <meta name="theme-color" content="#8E1F3F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&family=Tiro+Devanagari+Hindi&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
 :root {
-  --maroon: #8E1F3F; --rose: #D7577A; --gold: #C99A3E; --gold-hi: #F1D184; --ink: #3A1E33;
-  --paper: #FFFDF6; --parchment: #F8EEDB; --line: rgba(201,154,62,.45); --green: #2F7D4F;
-  --f-caps: "Cinzel", Georgia, serif; --f-body: "Cormorant Garamond", Georgia, serif; --f-script: "Pinyon Script", cursive;
+  --maroon: #8B1E2B; --rose: #D7577A; --gold: #C99A3E; --gold-hi: #F1D184; --ink: #3A1E33; --blue: #22408F; --green: #1E6B4E;
+  --paper: #FFFDF6; --parchment: #F8EEDB; --line: rgba(201,154,62,.45);
+  --f: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif; --script: "Great Vibes", cursive;
 }
 * { box-sizing: border-box; margin: 0; }
 html { -webkit-text-size-adjust: 100%; }
-body {
-  font-family: var(--f-body), "Tiro Devanagari Hindi", serif; font-size: 18px; line-height: 1.5; color: var(--ink); min-height: 100vh;
-  background: radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.8), transparent 50%), radial-gradient(ellipse at 90% 100%, rgba(232,196,140,.35), transparent 55%), var(--parchment);
-  padding: 0 16px calc(40px + env(safe-area-inset-bottom, 0px));
-}
-.wrap { max-width: 760px; margin: 0 auto; }
-header { text-align: center; padding: 34px 0 18px; }
-.hi { font-family: "Tiro Devanagari Hindi", serif; color: var(--rose); font-size: 20px; }
-h1 { font-family: var(--f-script); font-weight: 400; color: var(--maroon); font-size: clamp(44px, 10vw, 64px); line-height: 1.1; }
-h1 i { font-style: normal; font-size: .55em; color: var(--gold); }
-.lede { font-style: italic; color: #5a3a4a; max-width: 34ch; margin: 4px auto 0; }
-.card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin-top: 16px; box-shadow: 0 14px 34px rgba(120,60,40,.1), inset 0 0 0 5px rgba(255,255,255,.7); }
-.card h2 { font-family: var(--f-caps); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-label { display: block; font-family: var(--f-caps); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--maroon); margin: 12px 0 6px; }
-input[type=text], textarea, select {
-  width: 100%; font: inherit; font-size: 18px; color: var(--ink); background: #fff; border: 1px solid rgba(142,31,63,.3); border-radius: 12px; padding: 11px 14px;
-}
-textarea { min-height: 120px; resize: vertical; line-height: 1.45; }
+body { font-family: var(--f); font-size: 15px; line-height: 1.5; color: var(--ink); min-height: 100vh;
+  background: radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.85), transparent 50%), radial-gradient(ellipse at 90% 100%, rgba(232,196,140,.35), transparent 55%), var(--parchment);
+  padding: 0 14px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.wrap { max-width: 820px; margin: 0 auto; }
+header { text-align: center; padding: 26px 0 8px; }
+.hi { font-family: "Tiro Devanagari Hindi", serif; color: var(--rose); font-size: 18px; }
+h1 { font-family: var(--script); font-weight: 400; color: var(--maroon); font-size: clamp(40px, 9vw, 58px); line-height: 1.25; padding-top: .1em; }
+h1 i { font-style: normal; font-size: .6em; color: var(--green); }
+.sub { color: #6b4b5b; font-size: 14px; }
+
+/* sticky top bar with the side dropdown and the counts */
+.top { position: sticky; top: 0; z-index: 20; margin: 10px -14px 0; padding: 10px 14px; background: rgba(248,238,219,.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.top__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; max-width: 820px; margin: 0 auto; }
+.side-select { flex: 1 1 220px; font: 600 15px var(--f); color: #fff; background: var(--maroon) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23F1D184' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center; border: 0; border-radius: 12px; padding: 11px 38px 11px 14px; -webkit-appearance: none; appearance: none; }
+.sync { font-size: 12px; color: #6b4b5b; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.sync i { width: 8px; height: 8px; border-radius: 50%; background: #9aa; }
+.sync.ok i { background: #2FA36B; } .sync.busy i { background: #E2A21B; } .sync.err i { background: #D0453A; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; max-width: 820px; margin: 8px auto 0; }
+.stat { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 6px 8px; text-align: center; }
+.stat b { display: block; font-size: 18px; line-height: 1.2; color: var(--maroon); }
+.stat span { font-size: 11px; color: #6b4b5b; }
+
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-top: 14px; box-shadow: 0 12px 30px rgba(120,60,40,.08); }
+.card h2 { font-size: 13px; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+label { display: block; font-size: 12px; font-weight: 600; color: var(--maroon); margin: 10px 0 4px; }
+label small { font-weight: 400; color: #8a6a7a; }
+input[type=text], input[type=tel], input[type=number], input[type=password], textarea, select {
+  width: 100%; font: 15px var(--f); color: var(--ink); background: #fff; border: 1px solid rgba(139,30,43,.25); border-radius: 10px; padding: 10px 12px; }
+textarea { min-height: 72px; resize: vertical; }
 input:focus, textarea:focus, select:focus { outline: 2px solid var(--gold-hi); border-color: var(--gold); }
-.row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-.row > .grow { flex: 1 1 220px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 999px; cursor: pointer; font-family: var(--f-caps); font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--gold-hi); color: #FFF2DA; background: radial-gradient(circle at 35% 30%, #D84A6E, #8E1F3F); white-space: nowrap; }
-.btn.ghost { background: #fff; color: var(--maroon); border-color: rgba(142,31,63,.35); }
-.btn.wa { background: radial-gradient(circle at 35% 30%, #3BAF6A, #1E7A47); border-color: #9BE0B5; }
-.btn.small { min-height: 36px; padding: 6px 12px; font-size: 11px; }
-.btn svg { width: 16px; height: 16px; flex: none; }
-.tabs { display: flex; gap: 6px; margin-bottom: 8px; }
-.tabs button { flex: 1; font-family: var(--f-caps); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; padding: 10px; border-radius: 999px; border: 1px solid rgba(142,31,63,.25); background: transparent; color: var(--maroon); cursor: pointer; }
-.tabs button[aria-selected=true] { background: var(--maroon); color: #FFF2DA; border-color: var(--maroon); }
-.hint { font-size: 15px; font-style: italic; color: #6b4b5b; margin-top: 6px; }
-details { margin-top: 12px; }
-summary { cursor: pointer; font-family: var(--f-caps); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--maroon); }
-.tokens { font-size: 14px; color: #6b4b5b; margin-top: 6px; }
-.tokens code { background: rgba(201,154,62,.15); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
-.listhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
-.count { font-style: italic; color: #6b4b5b; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 8px 16px; border-radius: 999px; cursor: pointer; font: 600 13px var(--f); text-decoration: none; border: 1px solid transparent; color: #FFF2DA; background: radial-gradient(circle at 35% 30%, #D84A6E, #8B1E2B); white-space: nowrap; }
+.btn.ghost { background: #fff; color: var(--maroon); border-color: rgba(139,30,43,.3); }
+.btn.wa { background: radial-gradient(circle at 35% 30%, #3BAF6A, #1E7A47); }
+.btn.small { min-height: 34px; padding: 5px 12px; font-size: 12px; }
+.btn svg { width: 15px; height: 15px; flex: none; }
+.btn:disabled { opacity: .5; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+.toolbar input { flex: 1 1 180px; }
+.toolbar select { flex: 0 1 200px; width: auto; }
 .empty { text-align: center; padding: 26px 10px; color: #7a5a6a; font-style: italic; }
-.guest { border-top: 1px dashed var(--line); padding: 14px 0; display: grid; gap: 8px; }
-.guest:first-child { border-top: 0; }
-.guest__top { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; }
-.guest__name { font-weight: 600; font-size: 20px; color: var(--ink); }
-.guest__side { font-family: var(--f-caps); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-left: 6px; font-weight: 400; }
-.guest__link { font-size: 14.5px; color: var(--maroon); word-break: break-all; text-decoration: none; border-bottom: 1px dotted rgba(142,31,63,.4); }
-.guest__actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.guest.sent .guest__name::after { content: "✓ sent"; margin-left: 8px; font-family: var(--f-caps); font-size: 11px; letter-spacing: .1em; color: var(--green); font-weight: 400; }
-.guest.sent { opacity: .72; }
-.x { background: none; border: 0; color: #9a7a8a; font-size: 22px; line-height: 1; cursor: pointer; padding: 2px 6px; }
-.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: #FFF2DA; padding: 10px 18px; border-radius: 999px; font-size: 15px; transition: .3s; pointer-events: none; z-index: 10; }
+.g { border-top: 1px dashed var(--line); padding: 14px 0; display: grid; gap: 6px; }
+.g:first-child { border-top: 0; padding-top: 4px; }
+.g__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.g__name { font-weight: 600; font-size: 17px; color: var(--ink); line-height: 1.35; }
+.g__name small { font-weight: 400; color: #8a6a7a; font-size: 14px; }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+.tag.groom { background: #E6ECFA; color: var(--blue); } .tag.bride { background: #FBE4EA; color: var(--maroon); }
+.g__meta { font-size: 13px; color: #6b4b5b; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: #F2ECE2; color: #5a4a3a; }
+.chip.sent { background: #E3F3EA; color: #1E6B4E; } .chip.open { background: #E6ECFA; color: var(--blue); } .chip.wait { background: #FCEFD8; color: #8A5A10; }
+.g__note { font-size: 13px; font-style: italic; color: #6b4b5b; }
+.g__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.x { background: none; border: 0; color: #9a7a8a; font-size: 20px; line-height: 1; cursor: pointer; padding: 2px 4px; }
+details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--maroon); }
+.tokens { font-size: 12.5px; color: #6b4b5b; margin-top: 6px; }
+.tokens code { background: rgba(201,154,62,.15); padding: 1px 5px; border-radius: 5px; }
+.banner { background: #FFF6E2; border: 1px solid #F0D79B; border-radius: 14px; padding: 12px 14px; margin-top: 14px; font-size: 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.lock { max-width: 420px; margin: 30px auto; }
+.lock ol { padding-left: 20px; font-size: 14px; display: grid; gap: 6px; }
+.lock code { background: rgba(201,154,62,.15); padding: 1px 5px; border-radius: 5px; font-size: 12.5px; }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: #FFF2DA; padding: 9px 16px; border-radius: 999px; font-size: 14px; transition: .3s; pointer-events: none; z-index: 50; max-width: 92vw; text-align: center; }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
-.foot { text-align: center; font-size: 14px; color: #7a5a6a; margin-top: 24px; font-style: italic; }
+.foot { text-align: center; font-size: 12.5px; color: #7a5a6a; margin-top: 22px; }
+.modal { position: fixed; inset: 0; z-index: 40; background: rgba(40,14,24,.45); display: grid; place-items: end center; padding: 0; }
+.modal > .card { width: min(100%, 560px); margin: 0; border-radius: 20px 20px 0 0; max-height: 92vh; overflow: auto; padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 640px) { .modal { place-items: center; } .modal > .card { border-radius: 20px; } }
+.modal h2 { font-size: 16px; color: var(--maroon); }
+.modal__foot { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 [hidden] { display: none !important; }
-@media (max-width: 520px) { .card { padding: 16px; } .btn { padding: 10px 14px; } }
+@media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; } .stat b { font-size: 16px; } }
 </style>
 </head>
 <body>
@@ -76,61 +96,119 @@ summary { cursor: pointer; font-family: var(--f-caps); font-size: 12px; letter-s
   <header>
     <p class="hi">॥ शुभ विवाह ॥</p>
     <h1 id="names">Prashant <i>&amp;</i> Shweta</h1>
-    <p class="lede">Make a personal invitation link for every family, then send it on WhatsApp in one tap.</p>
+    <p class="sub">Guest list &amp; invitations</p>
   </header>
+</div>
 
-  <section class="card" aria-labelledby="addH">
-    <h2 id="addH">Add families</h2>
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" aria-selected="true" data-tab="one">One family</button>
-      <button type="button" role="tab" aria-selected="false" data-tab="many">Many at once</button>
-    </div>
-    <form id="oneForm" data-panel="one">
-      <div class="row">
-        <div class="grow">
-          <label for="name">Family / guest name</label>
-          <input id="name" type="text" placeholder="e.g. Sharma Family" autocomplete="off" required>
-        </div>
-        <button class="btn" type="submit">Create link</button>
-      </div>
-      <p class="hint">They'll see “Dear Sharma Family, you are invited” when they open it. The name is hidden inside the link.</p>
+<!-- ====== passcode / setup ====== -->
+<section class="lock card" id="lock" hidden>
+  <div id="lockPass">
+    <h2>Shared guest list</h2>
+    <p style="font-size:14px;margin-bottom:6px">Enter the family passcode to see and update the list.</p>
+    <form id="passForm">
+      <label for="pass">Passcode</label>
+      <input id="pass" type="password" autocomplete="current-password" required>
+      <label for="who">Your name <small>(shown as "sent by")</small></label>
+      <input id="who" type="text" placeholder="e.g. Prashant" autocomplete="name" required>
+      <div class="modal__foot"><button class="btn" type="submit">Open the list</button></div>
+      <p class="g__note" id="passErr" hidden style="color:#B0303A;margin-top:8px">That passcode didn't work. Please try again.</p>
     </form>
-    <form id="manyForm" data-panel="many" hidden>
-      <label for="many">One name per line</label>
-      <textarea id="many" placeholder="Sharma Family&#10;Gupta Ji and Family&#10;Rohit Bhaiya&#10;Mishra Uncle and Aunty"></textarea>
-      <div class="row" style="margin-top:10px"><button class="btn" type="submit">Create all links</button></div>
-    </form>
-    <div class="row">
-      <div class="grow">
-        <label for="side">Which events should they see?</label>
-        <select id="side">
-          <option value="">All events</option>
-          <option value="groom">Groom's side events only</option>
-          <option value="bride">Bride's side events only</option>
-        </select>
+  </div>
+  <div id="lockSetup" hidden>
+    <h2>The shared guest list isn't connected yet</h2>
+    <p style="font-size:14px;margin-bottom:8px">Until it is, this page saves the list on <b>this phone only</b>. To share one list between both families:</p>
+    <ol>
+      <li>Create a new Google Sheet.</li>
+      <li>Extensions → Apps Script → paste the code from <code>setup/guest-sheet.gs</code> → Save.</li>
+      <li>Project Settings → Script properties → add <code>PASSCODE</code> with your passcode.</li>
+      <li>Deploy → New deployment → Web app → Execute as <b>Me</b>, access <b>Anyone</b> → Deploy.</li>
+      <li>Put the Web app URL in <code>wedding.json</code> → <code>guestSheet.url</code>.</li>
+    </ol>
+    <div class="modal__foot"><button class="btn" type="button" id="useLocal">Use this phone for now</button></div>
+  </div>
+</section>
+
+<!-- ====== the app ====== -->
+<div id="app" hidden>
+  <div class="top">
+    <div class="top__row">
+      <select class="side-select" id="sideSel" aria-label="Which side">
+        <option value="">Everyone · both families</option>
+        <option value="groom">Groom's side · Upadhyay family</option>
+        <option value="bride">Bride's side · Choudhary family</option>
+      </select>
+      <span class="sync" id="sync"><i></i><span>…</span></span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stFam">0</b><span>families</span></div>
+      <div class="stat"><b id="stGuests">0</b><span>guests</span></div>
+      <div class="stat"><b id="stSent">0</b><span>sent</span></div>
+      <div class="stat"><b id="stOpen">0</b><span>opened</span></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="banner" id="importBanner" hidden>
+      <span id="importText"></span>
+      <button class="btn small" type="button" id="importBtn">Add them to this list</button>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="q" placeholder="Search name, city or number…" aria-label="Search">
+      <select id="filter" aria-label="Show">
+        <option value="">Show all</option>
+        <option value="notsent">Not sent yet</option>
+        <option value="sentnotopen">Sent, not opened</option>
+        <option value="opened">Opened</option>
+      </select>
+      <button class="btn" type="button" id="addBtn">+ Add family</button>
+    </div>
+
+    <section class="card" aria-label="Families">
+      <div id="list"></div>
+    </section>
+
+    <section class="card">
+      <details>
+        <summary>WhatsApp message</summary>
+        <textarea id="msg" style="margin-top:8px;min-height:170px"></textarea>
+        <p class="tokens"><code>{name}</code> = family name, <code>{link}</code> = their personal link. <button type="button" class="x" id="resetMsg" style="font-size:13px;text-decoration:underline">Reset</button></p>
+      </details>
+      <div class="g__actions" style="margin-top:12px">
+        <button class="btn ghost small" type="button" id="refresh">Refresh list</button>
+        <button class="btn ghost small" type="button" id="csv">Download (CSV)</button>
+        <button class="btn ghost small" type="button" id="logout">Change name / passcode</button>
       </div>
-    </div>
-    <details>
-      <summary>Edit the WhatsApp message</summary>
-      <textarea id="msg" style="margin-top:8px;min-height:180px"></textarea>
-      <p class="tokens"><code>{name}</code> becomes the family's name and <code>{link}</code> their personal link. <button type="button" class="x" id="resetMsg" style="font-size:14px;text-decoration:underline">Reset to default</button></p>
-    </details>
-  </section>
+    </section>
+    <p class="foot">Only for the two families: not linked from the invitation, and hidden from search engines.</p>
+  </div>
+</div>
 
-  <section class="card" aria-labelledby="listH">
-    <div class="listhead">
-      <h2 id="listH" style="margin:0">Your invitation links</h2>
-      <span class="count" id="count"></span>
+<!-- ====== add / edit family ====== -->
+<div class="modal" id="modal" hidden>
+  <form class="card" id="form">
+    <h2 id="formTitle">Add a family</h2>
+    <label for="fName">Family / guest name</label>
+    <input id="fName" type="text" placeholder="e.g. Sharma Family" required autocomplete="off">
+    <div class="grid2">
+      <div><label for="fSide">Side</label>
+        <select id="fSide"><option value="groom">Groom's side (Upadhyay)</option><option value="bride">Bride's side (Choudhary)</option></select></div>
+      <div><label for="fGreet">Greeting on the invitation</label>
+        <select id="fGreet"><option>Dear</option><option>Respected</option><option>Pranam</option><option>Namaste</option><option value="-">Just the name</option></select></div>
     </div>
-    <div id="list"></div>
-    <div class="row" id="bulk" hidden style="margin-top:12px;justify-content:center">
-      <button class="btn ghost small" type="button" id="copyAll">Copy all links</button>
-      <button class="btn ghost small" type="button" id="csv">Download list (CSV)</button>
-      <button class="btn ghost small" type="button" id="clear">Clear list</button>
+    <label for="fPhones">WhatsApp number(s) <small>(one per line; +91 added if missing)</small></label>
+    <textarea id="fPhones" rows="2" style="min-height:58px" placeholder="98765 43210"></textarea>
+    <div class="grid2">
+      <div><label for="fCity">City</label><input id="fCity" type="text" placeholder="e.g. Kolkata"></div>
+      <div><label for="fGuests">Number of guests</label><input id="fGuests" type="number" min="1" max="99" placeholder="e.g. 4"></div>
     </div>
-  </section>
-
-  <p class="foot">This page is only for you: it isn't linked from the invitation and search engines are asked not to list it.<br>Your list is saved on this phone / computer only.</p>
+    <label for="fNotes">Notes <small>(only for you, not shown to the guest)</small></label>
+    <input id="fNotes" type="text" placeholder="e.g. Mama ji, call before sending">
+    <div class="modal__foot">
+      <button class="btn ghost" type="button" id="cancel">Cancel</button>
+      <button class="btn" type="submit" id="saveBtn">Save</button>
+    </div>
+  </form>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -139,117 +217,244 @@ summary { cursor: pointer; font-family: var(--f-caps); font-size: 12px; letter-s
   "use strict";
   const $ = (s) => document.querySelector(s);
   const SITE = location.origin + location.pathname.replace(/\/send\/?(index\.html)?$/, "/");
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const SIDE = { groom: "Groom's side", bride: "Bride's side" };
+  let W = {}, SHEET = "", rows = [], mode = "", editing = null;
 
-  let info = { g: "Prashant", b: "Shweta", date: "Monday, 30 November 2026", venue: "Beldih Club, Jamshedpur" };
-  const defaultMsg = () =>
-`🙏 Namaste {name},
+  /* ---------- storage: the shared Google Sheet, or this phone only ---------- */
+  const api = {
+    async call(body) {
+      setSync("busy", "Saving…");
+      const r = await fetch(SHEET, { method: "POST", body: JSON.stringify({ ...body, passcode: store.get("gl-pass", "") }) });
+      const j = await r.json();
+      if (!j.ok) { setSync("err", j.error === "passcode" ? "Wrong passcode" : "Not saved"); throw new Error(j.error || "failed"); }
+      setSync("ok", "Saved to the shared list");
+      return j;
+    },
+    async list() {
+      if (mode === "local") return store.get("gl-rows", []);
+      setSync("busy", "Loading…");
+      const j = await api.call({ action: "list" });
+      setSync("ok", "Shared list · up to date");
+      return j.rows || [];
+    },
+    async save(g) {
+      if (mode === "local") { const all = store.get("gl-rows", []); const i = all.findIndex((x) => x.ID === g.ID); if (i >= 0) all[i] = { ...all[i], ...g }; else all.push(g); store.set("gl-rows", all); setSync("ok", "Saved on this phone"); return; }
+      return api.call({ action: "save", guest: g });
+    },
+    async saveMany(list) {
+      if (mode === "local") { store.set("gl-rows", [...store.get("gl-rows", []), ...list]); return; }
+      return api.call({ action: "saveMany", guests: list });
+    },
+    async remove(id) {
+      if (mode === "local") { store.set("gl-rows", store.get("gl-rows", []).filter((x) => x.ID !== id)); return; }
+      return api.call({ action: "delete", id });
+    }
+  };
+  function setSync(cls, text) { const s = $("#sync"); s.className = "sync " + cls; s.lastElementChild.textContent = text; }
 
-With the blessings of our elders, we warmly invite you and your family to the wedding of ${info.g} & ${info.b} on ${info.date} at ${info.venue}.
+  /* ---------- the personal link: name · side · greeting · id, packed so the name can't be read ---------- */
+  const encode = (txt) => { let bin = ""; new TextEncoder().encode(txt).forEach((b) => (bin += String.fromCharCode(b)));
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
+  const newId = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => "abcdefghjkmnpqrstuvwxyz23456789"[b % 31]).join("");
+  const linkFor = (g) => SITE + "?i=" + encode([String(g.Name).trim(), g.Side || "", g.Greeting || "Dear", g.ID].join("\u0001"));
+  const phones = (g) => String(g.Phones || "").split(/[\n,;\/]+/).map((p) => p.trim()).filter(Boolean);
+  const waDigits = (p) => { let d = p.replace(/\D/g, ""); if (d.length === 10) d = "91" + d; if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1); return d; };
+  const pretty = (p) => { const d = waDigits(p); return d.length === 12 && d.startsWith("91") ? `+91 ${d.slice(2, 7)} ${d.slice(7)}` : "+" + d; };
+  const when = (iso) => { if (!iso) return ""; const d = new Date(iso); if (isNaN(d)) return String(iso);
+    return d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }); };
+
+  /* ---------- WhatsApp message ---------- */
+  const msgBox = $("#msg");
+  const defaultMsg = () => `🙏 Namaste {name},
+
+With the blessings of our elders, we warmly invite you and your family to the wedding of ${W.g || "Prashant"} & ${W.b || "Shweta"} on ${W.date || "Monday, 30 November 2026"}${W.venue ? " at " + W.venue : ""}.
 
 Please open your personal invitation for all the details:
 {link}
 
 With love,
 Upadhyay & Choudhary families`;
+  const message = (g) => msgBox.value.replace(/\{name\}/g, String(g.Name).trim()).replace(/\{link\}/g, linkFor(g));
 
-  let list = store.get("send-list", []);
-  const msgBox = $("#msg");
-
-  // keep names, date and venue in step with wedding.json
-  fetch(SITE + "wedding.json", { cache: "no-store" }).then((r) => r.json()).then((w) => {
-    const v = (w.events || []).find((e) => e.id === "vivah");
-    info = { g: w.groom.name, b: w.bride.name, date: w.dateText, venue: v ? `${v.venue}, ${w.city}` : w.city };
-    $("#names").innerHTML = `${esc(info.g)} <i>&amp;</i> ${esc(info.b)}`;
-    document.title = `Invitation Links · ${info.g} & ${info.b}`;
-    if (!store.get("send-msg", null)) msgBox.value = defaultMsg();
-    render();
-  }).catch(() => {});
-  msgBox.value = store.get("send-msg", null) || defaultMsg();
-  msgBox.addEventListener("input", () => { store.set("send-msg", msgBox.value); render(); });
-  $("#resetMsg").addEventListener("click", () => { msgBox.value = defaultMsg(); store.set("send-msg", null); render(); });
-
-  // a name becomes part of the link: spaces → hyphens, characters that would break a link are removed
-  // the name (and side) are packed into a short code so they can't be read in the WhatsApp message
-  const encode = (txt) => { let bin = ""; new TextEncoder().encode(txt).forEach((b) => (bin += String.fromCharCode(b)));
-    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
-  const linkFor = (g) => SITE + "?i=" + encode(g.name.trim() + (g.side ? "\u0001" + g.side : ""));
-  const message = (g) => msgBox.value.replace(/\{name\}/g, g.name.trim()).replace(/\{link\}/g, linkFor(g));
-  const SIDE = { groom: "Groom's side", bride: "Bride's side" };
-
-  const ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>';
-
+  /* ---------- list ---------- */
+  const ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>';
+  function visible() {
+    const side = $("#sideSel").value, f = $("#filter").value, q = $("#q").value.trim().toLowerCase();
+    return rows.filter((g) => (!side || g.Side === side)
+      && (!f || (f === "notsent" && !g.Sent) || (f === "sentnotopen" && g.Sent && !Number(g["Times Opened"])) || (f === "opened" && Number(g["Times Opened"])))
+      && (!q || [g.Name, g.City, g.Phones, g.Notes].join(" ").toLowerCase().includes(q)));
+  }
   function render() {
-    store.set("send-list", list);
-    const sent = list.filter((g) => g.sent).length;
-    $("#count").textContent = list.length ? `${list.length} ${list.length === 1 ? "family" : "families"} · ${sent} sent` : "";
-    $("#bulk").hidden = !list.length;
-    if (!list.length) { $("#list").innerHTML = '<p class="empty">No families yet. Add a name above to create the first link.</p>'; return; }
-    $("#list").innerHTML = list.map((g, i) => {
-      const url = linkFor(g);
-      return `<article class="guest${g.sent ? " sent" : ""}" data-i="${i}">
-        <div class="guest__top"><span class="guest__name">${esc(g.name)}${g.side ? `<span class="guest__side">${SIDE[g.side]}</span>` : ""}</span>
-          <button class="x" type="button" data-act="del" aria-label="Remove ${esc(g.name)}">×</button></div>
-        <a class="guest__link" href="${esc(url)}" target="_blank" rel="noopener">${esc(url.replace(/^https?:\/\//, ""))}</a>
-        <div class="guest__actions">
-          <a class="btn wa small" data-act="wa" href="https://wa.me/?text=${encodeURIComponent(message(g))}" target="_blank" rel="noopener">${ICON_WA}WhatsApp</a>
+    const side = $("#sideSel").value;
+    const inSide = rows.filter((g) => !side || g.Side === side);
+    $("#stFam").textContent = inSide.length;
+    $("#stGuests").textContent = inSide.reduce((n, g) => n + (Number(g.Guests) || 0), 0);
+    $("#stSent").textContent = inSide.filter((g) => g.Sent).length;
+    $("#stOpen").textContent = inSide.filter((g) => Number(g["Times Opened"])).length;
+    const list = visible().sort((a, b) => String(a.Name).localeCompare(String(b.Name)));
+    if (!list.length) { $("#list").innerHTML = `<p class="empty">${rows.length ? "No families match." : "No families yet. Tap “+ Add family” to start."}</p>`; return; }
+    $("#list").innerHTML = list.map((g) => {
+      const ph = phones(g), opened = Number(g["Times Opened"]) || 0;
+      const greet = g.Greeting && g.Greeting !== "-" ? `<small>${esc(g.Greeting)}</small> ` : "";
+      const meta = [g.City, g.Guests ? `${g.Guests} guest${g.Guests > 1 ? "s" : ""}` : "", ph.map(pretty).join(", ")].filter(Boolean).join(" · ");
+      const chips = [
+        g.Sent ? `<span class="chip sent">✓ Sent${g["Sent To"] ? " to " + esc(g["Sent To"]) : ""}${g["Sent On"] ? " · " + esc(when(g["Sent On"])) : ""}${g["Sent By"] ? " · by " + esc(g["Sent By"]) : ""}</span>` : `<span class="chip wait">Not sent yet</span>`,
+        opened ? `<span class="chip open">👁 Opened ${opened}×${g["Last Opened"] ? " · last " + esc(when(g["Last Opened"])) : ""}</span>` : (g.Sent ? `<span class="chip">Not opened yet</span>` : ""),
+        g["Last Song"] ? `<span class="chip">♪ last song: ${esc(String(g["Last Song"]).replace(/\.\w+$/, ""))}</span>` : ""
+      ].join("");
+      const wa = ph.length
+        ? ph.map((p) => `<a class="btn wa small" data-act="wa" data-phone="${esc(p)}" href="https://wa.me/${waDigits(p)}?text=${encodeURIComponent(message(g))}" target="_blank" rel="noopener">${ICON_WA}${ph.length > 1 ? esc(pretty(p).slice(-5)) : "WhatsApp"}</a>`).join("")
+        : `<a class="btn wa small" data-act="wa" data-phone="" href="https://wa.me/?text=${encodeURIComponent(message(g))}" target="_blank" rel="noopener">${ICON_WA}WhatsApp</a>`;
+      return `<article class="g" data-id="${esc(g.ID)}">
+        <div class="g__top"><div class="g__name">${greet}${esc(g.Name)}<span class="tag ${g.Side === "bride" ? "bride" : "groom"}">${SIDE[g.Side] || ""}</span></div>
+          <button class="x" type="button" data-act="del" aria-label="Delete ${esc(g.Name)}">×</button></div>
+        ${meta ? `<div class="g__meta">${esc(meta)}</div>` : ""}
+        <div class="chips">${chips}</div>
+        ${g.Notes ? `<div class="g__note">${esc(g.Notes)}</div>` : ""}
+        <div class="g__actions">${wa}
           <button class="btn ghost small" type="button" data-act="copymsg">Copy message</button>
           <button class="btn ghost small" type="button" data-act="copy">Copy link</button>
-          ${navigator.share ? '<button class="btn ghost small" type="button" data-act="share">Share…</button>' : ""}
-          <button class="btn ghost small" type="button" data-act="sent">${g.sent ? "Mark not sent" : "Mark sent"}</button>
+          <button class="btn ghost small" type="button" data-act="edit">Edit</button>
+          <button class="btn ghost small" type="button" data-act="sent">${g.Sent ? "Mark not sent" : "Mark sent"}</button>
         </div>
       </article>`;
-    }).reverse().join("");
+    }).join("");
   }
 
-  function toast(t) { const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("on"), 1800); }
+  async function reload(quiet) {
+    try { rows = await api.list(); render(); }
+    catch (e) { if (String(e.message) === "passcode") showLock(true); else if (!quiet) toast("Couldn't load the list. Check the internet and try Refresh."); }
+  }
+  async function saveRow(g, msg) {
+    const i = rows.findIndex((x) => x.ID === g.ID);
+    if (i >= 0) rows[i] = { ...rows[i], ...g }; else rows.push(g);
+    render();
+    try { await api.save(g); if (msg) toast(msg); }
+    catch (e) { toast("Not saved. Please check the internet and try again."); }
+  }
+
+  /* ---------- add / edit ---------- */
+  function openForm(g) {
+    editing = g || null;
+    $("#formTitle").textContent = g ? "Edit family" : "Add a family";
+    $("#fName").value = g ? g.Name : "";
+    $("#fSide").value = g ? g.Side : ($("#sideSel").value || store.get("gl-lastside", "groom"));
+    $("#fGreet").value = g ? (g.Greeting || "Dear") : "Dear";
+    $("#fPhones").value = g ? phones(g).join("\n") : "";
+    $("#fCity").value = g ? g.City || "" : "";
+    $("#fGuests").value = g ? g.Guests || "" : "";
+    $("#fNotes").value = g ? g.Notes || "" : "";
+    $("#modal").hidden = false; setTimeout(() => $("#fName").focus(), 50);
+  }
+  $("#addBtn").addEventListener("click", () => openForm(null));
+  $("#cancel").addEventListener("click", () => ($("#modal").hidden = true));
+  $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") $("#modal").hidden = true; });
+  $("#form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("#fName").value.trim(); if (!name) return;
+    const g = editing ? { ID: editing.ID } : { ID: newId(), "Added By": store.get("gl-who", ""), "Times Opened": 0 };
+    Object.assign(g, { Name: name, Side: $("#fSide").value, Greeting: $("#fGreet").value, Phones: $("#fPhones").value.split(/\n+/).map((p) => p.trim()).filter(Boolean).join(", "),
+      City: $("#fCity").value.trim(), Guests: $("#fGuests").value ? Number($("#fGuests").value) : "", Notes: $("#fNotes").value.trim() });
+    g.Link = linkFor(g);
+    store.set("gl-lastside", g.Side);
+    $("#modal").hidden = true;
+    saveRow(g, editing ? "Updated" : `${name} added`);
+  });
+
+  /* ---------- buttons on each family ---------- */
+  $("#list").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const g = rows.find((x) => x.ID === b.closest(".g").dataset.id); if (!g) return;
+    const act = b.dataset.act;
+    if (act === "wa") {   // WhatsApp opens; note who it was sent to
+      const to = b.dataset.phone ? pretty(b.dataset.phone) : "";
+      const already = String(g["Sent To"] || "").split(/,\s*/).filter(Boolean);
+      if (to && !already.includes(to)) already.push(to);
+      setTimeout(() => saveRow({ ID: g.ID, Sent: "Yes", "Sent To": already.join(", "), "Sent On": new Date().toISOString(), "Sent By": store.get("gl-who", "") }), 400);
+    }
+    if (act === "copy") copy(linkFor(g), "Link copied");
+    if (act === "copymsg") copy(message(g), "Message copied");
+    if (act === "edit") openForm(g);
+    if (act === "sent") saveRow(g.Sent ? { ID: g.ID, Sent: "", "Sent To": "", "Sent On": "", "Sent By": "" }
+      : { ID: g.ID, Sent: "Yes", "Sent On": new Date().toISOString(), "Sent By": store.get("gl-who", "") });
+    if (act === "del" && confirm(`Delete ${g.Name} from the list?`)) {
+      rows = rows.filter((x) => x.ID !== g.ID); render();
+      try { await api.remove(g.ID); toast("Deleted"); } catch (err) { toast("Not deleted. Please try again."); reload(true); }
+    }
+  });
+
+  /* ---------- helpers ---------- */
+  function toast(t) { const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("on"), 2000); }
   async function copy(text, what) {
     try { await navigator.clipboard.writeText(text); }
     catch (e) { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
-    toast(`${what} copied`);
+    toast(what);
   }
-  function add(names) {
-    const side = $("#side").value;
-    let added = 0;
-    names.map((n) => n.trim()).filter(Boolean).forEach((name) => {
-      if (list.some((g) => g.name.toLowerCase() === name.toLowerCase() && (g.side || "") === side)) return;
-      list.push({ name, side, sent: false }); added++;
-    });
-    render();
-    toast(added ? `${added} link${added > 1 ? "s" : ""} created` : "Already in your list");
-  }
-
-  $("#oneForm").addEventListener("submit", (e) => { e.preventDefault(); add([$("#name").value]); $("#name").value = ""; $("#name").focus(); });
-  $("#manyForm").addEventListener("submit", (e) => { e.preventDefault(); add($("#many").value.split(/\n|,(?![^(]*\))/)); $("#many").value = ""; });
-  document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
-    document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-    document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.tab));
-  }));
-
-  $("#list").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-act]"); if (!b) return;
-    const i = +b.closest(".guest").dataset.i, g = list[i];
-    switch (b.dataset.act) {
-      case "del": list.splice(i, 1); render(); break;
-      case "copy": copy(linkFor(g), "Link"); break;
-      case "copymsg": copy(message(g), "Message"); break;
-      case "share": navigator.share({ text: message(g) }).then(() => { g.sent = true; render(); }).catch(() => {}); break;
-      case "sent": g.sent = !g.sent; render(); break;
-      case "wa": g.sent = true; setTimeout(render, 300); break;
-    }
-  });
-  $("#copyAll").addEventListener("click", () => copy(list.map((g) => `${g.name}: ${linkFor(g)}`).join("\n"), "All links"));
+  ["#sideSel", "#filter"].forEach((s) => $(s).addEventListener("change", () => { store.set("gl-view" + s, $(s).value); render(); }));
+  $("#q").addEventListener("input", render);
+  msgBox.addEventListener("input", () => { store.set("gl-msg", msgBox.value); render(); });
+  $("#resetMsg").addEventListener("click", () => { store.set("gl-msg", null); msgBox.value = defaultMsg(); render(); });
+  $("#refresh").addEventListener("click", () => reload());
+  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); showLock(); });
   $("#csv").addEventListener("click", () => {
-    const rows = [["Name", "Side", "Link", "Sent"], ...list.map((g) => [g.name, SIDE[g.side] || "All", linkFor(g), g.sent ? "Yes" : "No"])];
-    const csv = "﻿" + rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "invitation-links.csv"; a.click();
+    const cols = ["Name", "Side", "Greeting", "Phones", "City", "Guests", "Notes", "Sent", "Sent To", "Sent On", "Sent By", "Times Opened", "Last Opened", "Last Song", "Link"];
+    const out = [cols, ...rows.map((g) => cols.map((c) => c === "Link" ? linkFor(g) : c === "Side" ? SIDE[g.Side] || g.Side : g[c] ?? ""))];
+    const csv = "﻿" + out.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "guest-list.csv"; a.click();
   });
-  $("#clear").addEventListener("click", () => { if (confirm("Remove all families from this list?")) { list = []; render(); } });
-  render();
+
+  /* ---------- families saved on this phone with the old page: offer to move them in ---------- */
+  function offerImport() {
+    const old = store.get("send-list", []).filter((g) => g && g.name);
+    if (!old.length || store.get("gl-imported", false)) return;
+    $("#importText").textContent = `${old.length} famil${old.length > 1 ? "ies" : "y"} you added on this phone before can be moved into this list.`;
+    $("#importBanner").hidden = false;
+    $("#importBtn").onclick = async () => {
+      const list = old.map((o) => { const g = { ID: newId(), Name: o.name, Side: o.side || store.get("gl-lastside", "groom"), Greeting: "Dear", Sent: o.sent ? "Yes" : "", "Added By": store.get("gl-who", "") }; g.Link = linkFor(g); return g; });
+      try { await api.saveMany(list); store.set("gl-imported", true); $("#importBanner").hidden = true; toast(`${list.length} added`); reload(); }
+      catch (e) { toast("Couldn't add them. Please try again."); }
+    };
+  }
+
+  /* ---------- start ---------- */
+  function showLock(wrong) {
+    $("#app").hidden = true; $("#lock").hidden = false;
+    $("#lockSetup").hidden = !!SHEET; $("#lockPass").hidden = !SHEET;
+    $("#passErr").hidden = !wrong;
+    $("#who").value = store.get("gl-who", "");
+  }
+  async function start() {
+    $("#lock").hidden = true; $("#app").hidden = false;
+    $("#sideSel").value = store.get("gl-view#sideSel", ""); $("#filter").value = store.get("gl-view#filter", "");
+    setSync(mode === "local" ? "" : "busy", mode === "local" ? "Saved on this phone only" : "Loading…");
+    await reload();
+    offerImport();
+  }
+  $("#passForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    store.set("gl-pass", $("#pass").value.trim()); store.set("gl-who", $("#who").value.trim());
+    mode = "sheet"; start();
+  });
+  $("#useLocal").addEventListener("click", () => {
+    if (!store.get("gl-who", "")) store.set("gl-who", prompt("Your name (shown as “sent by”)") || "");
+    mode = "local"; start();
+  });
+  // pause the auto-refresh while a form is open; otherwise pick up the other family's changes every minute
+  setInterval(() => { if (mode === "sheet" && !document.hidden && $("#modal").hidden) reload(true); }, 60000);
+
+  fetch(SITE + "wedding.json", { cache: "no-store" }).then((r) => r.json()).catch(() => ({})).then((w) => {
+    const v = (w.events || []).find((e) => e.id === "vivah");
+    W = { g: w.groom && w.groom.name, b: w.bride && w.bride.name, date: w.dateText, venue: v ? `${v.venue}, ${w.city}` : "" };
+    if (W.g) { $("#names").innerHTML = `${esc(W.g)} <i>&amp;</i> ${esc(W.b)}`; document.title = `Guest List · ${W.g} & ${W.b}`; }
+    SHEET = (w.guestSheet && w.guestSheet.url) || "";
+    msgBox.value = store.get("gl-msg", null) || store.get("send-msg", null) || defaultMsg();
+    if (SHEET && store.get("gl-pass", "")) { mode = "sheet"; start(); } else showLock();
+  });
 })();
 </script>
 </body>
