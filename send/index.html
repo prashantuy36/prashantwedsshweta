@@ -206,7 +206,7 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
       <div class="g__actions" style="margin-top:12px">
         <button class="btn ghost small" type="button" id="refresh">Refresh list</button>
         <button class="btn ghost small" type="button" id="csv">Download (CSV)</button>
-        <button class="btn ghost small" type="button" id="logout">Change name / passcode</button>
+        <button class="btn ghost small" type="button" id="logout">Log out</button>
       </div>
     </section>
     <p class="foot">Only for the two families: not linked from the invitation, and hidden from search engines.</p>
@@ -464,7 +464,8 @@ Upadhyay & Choudhary families`;
   msgBox.addEventListener("input", () => { store.set("gl-msg", msgBox.value); render(); });
   $("#resetMsg").addEventListener("click", () => { store.set("gl-msg", null); msgBox.value = defaultMsg(); render(); });
   $("#refresh").addEventListener("click", () => reload());
-  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); rows = []; setRole("all"); showLock(); });
+  // log out: forget the passcode on this phone (the name is remembered to save typing next time)
+  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); rows = []; render(); setRole("all"); $("#pass").value = ""; showLock(); toast("Logged out"); });
   $("#csv").addEventListener("click", () => {
     const cols = ["Name", "Side", "Greeting", "Phones", "City", "Guests", "Notes", "Sent", "Sent To", "Sent On", "Sent By", "Times Opened", "Last Opened", "Last Song", "Link"];
     const out = [cols, ...rows.map((g) => cols.map((c) => c === "Link" ? linkFor(g) : c === "Side" ? SIDE[g.Side] || g.Side : g[c] ?? ""))];
