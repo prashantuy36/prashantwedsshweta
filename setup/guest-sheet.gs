@@ -86,6 +86,7 @@ function handle_(p) {
     }
 
     if (p.action === 'delete') {
+      if (role !== 'all') return out_({ ok: false, error: 'only the both-sides passcode can delete' });
       const r = rows_(sh).find((x) => String(x.ID) === String(p.id));
       if (r && !mine(r)) return out_({ ok: false, error: 'not your side' });
       if (r) sh.deleteRow(r._row);

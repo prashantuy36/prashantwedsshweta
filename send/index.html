@@ -372,7 +372,7 @@ Upadhyay & Choudhary families`;
         : `<a class="btn wa small" data-act="wa" data-phone="" href="https://wa.me/?text=${encodeURIComponent(message(g))}" target="_blank" rel="noopener">${ICON_WA}WhatsApp</a>`;
       return `<article class="g" data-id="${esc(g.ID)}">
         <div class="g__top"><div class="g__name">${greet}${esc(g.Name)}<span class="tag ${g.Side === "bride" ? "bride" : "groom"}">${SIDE[g.Side] || ""}</span></div>
-          <button class="x" type="button" data-act="del" aria-label="Delete ${esc(g.Name)}">×</button></div>
+          ${ROLE === "all" ? `<button class="x" type="button" data-act="del" aria-label="Delete ${esc(g.Name)}">×</button>` : ""}</div>
         ${meta ? `<div class="g__meta">${esc(meta)}</div>` : ""}
         <a class="g__link" href="${esc(linkFor(g))}" target="_blank" rel="noopener">${esc(linkFor(g).replace(/^https?:\/\//, ""))}</a>
         <div class="chips">${chips}</div>
@@ -464,7 +464,7 @@ Upadhyay & Choudhary families`;
     if (act === "share") navigator.share({ text: message(g) }).then(() => saveRow({ ID: g.ID, Sent: "Yes", "Sent On": new Date().toISOString(), "Sent By": store.get("gl-who", "") })).catch(() => {});
     if (act === "sent") saveRow(g.Sent ? { ID: g.ID, Sent: "", "Sent To": "", "Sent On": "", "Sent By": "" }
       : { ID: g.ID, Sent: "Yes", "Sent On": new Date().toISOString(), "Sent By": store.get("gl-who", "") });
-    if (act === "del" && confirm(`Delete ${g.Name} from the list?`)) {
+    if (act === "del" && ROLE === "all" && confirm(`Delete ${g.Name} from the list?`)) {
       rows = rows.filter((x) => x.ID !== g.ID); render();
       try { await api.remove(g.ID); toast("Deleted"); } catch (err) { toast("Not deleted. Please try again."); reload(true); }
     }
