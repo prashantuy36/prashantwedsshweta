@@ -90,6 +90,10 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
 .tabs { display: flex; gap: 6px; margin-bottom: 4px; }
 .tabs button { flex: 1; font: 600 13px var(--f); padding: 9px; border-radius: 999px; border: 1px solid rgba(139,30,43,.25); background: transparent; color: var(--maroon); cursor: pointer; }
 .tabs button[aria-selected=true] { background: var(--maroon); color: #FFF2DA; border-color: var(--maroon); }
+.fchips { display: flex; gap: 6px; flex-wrap: wrap; margin: 2px 0 10px; }
+.fchips button { font: 500 13px var(--f); padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(139,30,43,.25); background: #fff; color: var(--maroon); cursor: pointer; }
+.fchips button b { font-weight: 700; margin-left: 2px; }
+.fchips button[aria-pressed=true] { background: var(--maroon); color: #FFF2DA; border-color: var(--maroon); }
 .inrow { display: flex; gap: 8px; } .inrow input { flex: 1; }
 .g__link { font-size: 12.5px; color: var(--maroon); word-break: break-all; text-decoration: none; border-bottom: 1px dotted rgba(139,30,43,.4); justify-self: start; }
 [hidden] { display: none !important; }
@@ -184,8 +188,9 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
 
     <div class="toolbar">
       <input type="text" id="q" placeholder="Search name, city or number…" aria-label="Search">
-      <select id="filter" aria-label="Show">
+      <select id="filter" aria-label="Show" hidden>
         <option value="">Show all</option>
+        <option value="sent">Sent</option>
         <option value="notsent">Not sent yet</option>
         <option value="sentnotopen">Sent, not opened</option>
         <option value="opened">Opened</option>
@@ -194,6 +199,13 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
 
     <section class="card" aria-label="Families">
       <h2>Your invitation links</h2>
+      <div class="fchips" id="fchips" role="group" aria-label="Show">
+        <button type="button" data-f="">All <b></b></button>
+        <button type="button" data-f="sent">Sent <b></b></button>
+        <button type="button" data-f="notsent">Not sent yet <b></b></button>
+        <button type="button" data-f="opened">Opened <b></b></button>
+        <button type="button" data-f="sentnotopen">Sent, not opened <b></b></button>
+      </div>
       <div id="list"></div>
     </section>
 
@@ -327,7 +339,7 @@ Upadhyay & Choudhary families`;
   function visible() {
     const side = $("#sideSel").value, f = $("#filter").value, q = $("#q").value.trim().toLowerCase();
     return rows.filter((g) => (!side || g.Side === side)
-      && (!f || (f === "notsent" && !g.Sent) || (f === "sentnotopen" && g.Sent && !Number(g["Times Opened"])) || (f === "opened" && Number(g["Times Opened"])))
+      && (!f || (f === "sent" && g.Sent) || (f === "notsent" && !g.Sent) || (f === "sentnotopen" && g.Sent && !Number(g["Times Opened"])) || (f === "opened" && Number(g["Times Opened"])))
       && (!q || [g.Name, g.City, g.Phones, g.Notes].join(" ").toLowerCase().includes(q)));
   }
   function render() {
@@ -337,6 +349,10 @@ Upadhyay & Choudhary families`;
     $("#stGuests").textContent = inSide.reduce((n, g) => n + (Number(g.Guests) || 0), 0);
     $("#stSent").textContent = inSide.filter((g) => g.Sent).length;
     $("#stOpen").textContent = inSide.filter((g) => Number(g["Times Opened"])).length;
+    // the quick filters with their counts (for the side chosen at the top)
+    const n = { "": inSide.length, sent: inSide.filter((g) => g.Sent).length, notsent: inSide.filter((g) => !g.Sent).length,
+      opened: inSide.filter((g) => Number(g["Times Opened"])).length, sentnotopen: inSide.filter((g) => g.Sent && !Number(g["Times Opened"])).length };
+    document.querySelectorAll("#fchips button").forEach((b) => { b.querySelector("b").textContent = n[b.dataset.f]; b.setAttribute("aria-pressed", String(b.dataset.f === $("#filter").value)); });
     const list = visible().sort((a, b) => String(a.Name).localeCompare(String(b.Name)));
     if (!list.length) { $("#list").innerHTML = `<p class="empty">${rows.length ? "No families match." : "No families yet. Tap “+ Add family” to start."}</p>`; return; }
     $("#list").innerHTML = list.map((g) => {
@@ -461,6 +477,7 @@ Upadhyay & Choudhary families`;
   ["#sideSel", "#filter"].forEach((s) => $(s).addEventListener("change", () => { store.set("gl-view" + s, $(s).value); render(); }));
   $("#sideSel").addEventListener("change", () => { if ($("#sideSel").value) $("#addSide").value = $("#sideSel").value; });
   $("#q").addEventListener("input", render);
+  document.querySelectorAll("#fchips button").forEach((b) => b.addEventListener("click", () => { $("#filter").value = b.dataset.f; store.set("gl-view#filter", b.dataset.f); render(); }));
   msgBox.addEventListener("input", () => { store.set("gl-msg", msgBox.value); render(); });
   $("#resetMsg").addEventListener("click", () => { store.set("gl-msg", null); msgBox.value = defaultMsg(); render(); });
   $("#refresh").addEventListener("click", () => reload());
