@@ -134,10 +134,10 @@ window.Mandap = (function () {
       o += `<line x1="${f(c1.x)}" y1="${f(c1.y)}" x2="${f(c2.x)}" y2="${f(c2.y)}" stroke="#9C6E1E" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>`;
       // jasmine swag
       const sway = Math.sin(t * 1.3 + i) * .012;
-      for (let k = 0; k <= 16; k++) {
-        const u = k / 16, sag = .16 * 4 * u * (1 - u) + sway * Math.sin(Math.PI * u);
+      for (let k = 0; k <= 12; k++) {
+        const u = k / 12, sag = .16 * 4 * u * (1 - u) + sway * Math.sin(Math.PI * u);
         const q = P(x1 + (x2 - x1) * u, H - BEAM - .02 - sag, z1 + (z2 - z1) * u);
-        o += k % 4 === 2 ? `<circle cx="${f(q.x)}" cy="${f(q.y)}" r="${f(3.4 * q.p)}" fill="#E87A92"/>` : `<ellipse cx="${f(q.x)}" cy="${f(q.y)}" rx="${f(3.3 * q.p)}" ry="${f(2.5 * q.p)}" fill="#FFFDF4" stroke="#E6D7B8" stroke-width=".6"/>`;
+        o += k % 3 === 1 ? `<circle cx="${f(q.x)}" cy="${f(q.y)}" r="${f(3.4 * q.p)}" fill="#E87A92"/>` : `<ellipse cx="${f(q.x)}" cy="${f(q.y)}" rx="${f(3.3 * q.p)}" ry="${f(2.5 * q.p)}" fill="#FFFDF4" stroke="#E6D7B8" stroke-width=".6"/>`;
       }
       items.push({ d: mid.d, s: o });
       // marigold strings
@@ -199,8 +199,8 @@ window.Mandap = (function () {
       const rib = prof.map(([r, h]) => cam(r * Math.cos(ph), DY + h, r * sz));
       dome += `<polyline points="${pts(rib)}" fill="none" stroke="#F1D184" stroke-width="2.2" opacity="${(.35 + .55 * Math.max(0, sz)).toFixed(2)}"/>`;
     }
-    for (let k = 0; k < 28; k++) {
-      const ph = A + k / 28 * TAU, sz = Math.sin(ph);
+    for (let k = 0; k < 20; k++) {
+      const ph = A + k / 20 * TAU, sz = Math.sin(ph);
       if (sz < 0) continue;
       const q = cam(DR * Math.cos(ph), DY + .02, DR * sz);
       dome += `<circle cx="${f(q.x)}" cy="${f(q.y)}" r="${f(3 * q.p)}" fill="#F7D27A"/>`;
@@ -223,26 +223,31 @@ window.Mandap = (function () {
     const A0 = -0.5, SPEED = TAU / 40;          // one full turn every 40 seconds
     el.innerHTML = svg(A0, 0);
     const g = el.querySelector("svg > g");
-    let live = false, raf = 0, last = 0, t0 = 0, shown = 0;
+    // it turns only when all of these are true: its page is showing, it is on screen, the tab is open,
+    // and the visitor is not in the middle of scrolling (so a swipe always stays smooth)
+    let live = false, seen = true, raf = 0, last = 0, clock = 0, prev = 0, scrollAt = 0;
+    const FRAME = 50;                           // 20 drawings a second: smooth for a slow turn, light on phones
+    addEventListener("scroll", () => { scrollAt = performance.now(); }, { passive: true });
+    addEventListener("touchmove", () => { scrollAt = performance.now(); }, { passive: true });
     function tick(now) {
       raf = 0;
-      if (!live) return;
-      if (!t0) t0 = now - shown * 1000;
-      if (now - last > 32) {                    // about 30 frames a second is plenty and easy on phones
-        last = now;
-        shown = (now - t0) / 1000;
-        A = A0 + shown * SPEED;
-        g.innerHTML = frame(shown);
+      if (!(live && seen) || document.hidden) return;
+      const dt = prev ? Math.min(100, now - prev) : 0; prev = now;
+      if (now - scrollAt > 300) {
+        clock += dt / 1000;
+        if (now - last >= FRAME) { last = now; A = A0 + clock * SPEED; g.innerHTML = frame(clock); }
       }
       raf = requestAnimationFrame(tick);
     }
-    function run() { if (live && !still && !raf && !document.hidden) { t0 = 0; raf = requestAnimationFrame(tick); } }
-    document.addEventListener("visibilitychange", () => { if (document.hidden && raf) { cancelAnimationFrame(raf); raf = 0; } else run(); });
+    function run() { if (live && seen && !still && !raf && !document.hidden) { prev = 0; raf = requestAnimationFrame(tick); } }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { seen = en.isIntersecting; seen ? run() : stop(); }).observe(el);
+    document.addEventListener("visibilitychange", () => { document.hidden ? stop() : run(); });
     return {
-      setActive(on) {                           // turns only while the mandap is on screen
+      setActive(on) {
         live = !!on;
         el.classList.toggle("live", live);
-        if (live) run(); else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        live ? run() : stop();
       },
       warm() {}, draw() {}
     };

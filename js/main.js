@@ -33,6 +33,9 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* phones fire "resize" all the time while scrolling (the address bar slides in and out).
+     Re-measuring on each of those made the page jump and stutter, so only a real width change counts. */
+  const onWidthChange = (fn) => { let w = innerWidth; addEventListener("resize", () => { if (innerWidth !== w) { w = innerWidth; fn(); } }); };
   const params = new URLSearchParams(location.search);
   /* ---------- personal invitation: ?i=<code> (name hidden in the link) or the older ?guest=Name ----------
      The name is read once, kept for this visit (so a refresh still greets them), and the address bar is
@@ -269,7 +272,7 @@
       let draw = starfield(cv, density, seed), run = false, raf;
       const loop = (t) => { draw(t); if (run && !reduce) raf = requestAnimationFrame(loop); };
       loop(0);
-      addEventListener("resize", () => { draw = starfield(cv, density, seed); loop(performance.now()); });
+      onWidthChange(() => { draw = starfield(cv, density, seed); loop(performance.now()); });
       new IntersectionObserver(([en]) => { run = en.isIntersecting; cancelAnimationFrame(raf); if (run) raf = requestAnimationFrame(loop); }).observe(cv);
     }
     animateWhileVisible($("#opStars"), 2600, 3);
@@ -339,12 +342,12 @@
       });
     }
     fitScenes();
-    addEventListener("resize", fitScenes);
+    onWidthChange(fitScenes);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitScenes);
     setTimeout(fitScenes, 1200); setTimeout(fitScenes, 3000);
 
     function placeSnaps() { const u = sceneLen(); snaps.forEach((d, k) => (d.style.top = `${Math.round(k * u + (k ? u * .35 : 0))}px`)); }
-    placeSnaps(); addEventListener("resize", placeSnaps);
+    placeSnaps(); onWidthChange(placeSnaps);
     function onScroll() {
       const total = story.offsetHeight - innerHeight;
       const p = Math.min(.9999, Math.max(0, -story.getBoundingClientRect().top / total));
@@ -473,7 +476,7 @@
         }
         requestAnimationFrame(frame);
       }
-      size(); addEventListener("resize", size); requestAnimationFrame(frame);
+      size(); onWidthChange(size); requestAnimationFrame(frame);
     })();
 
     /* ---------- opening + music ---------- */
