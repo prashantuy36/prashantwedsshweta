@@ -116,10 +116,10 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
     <p style="font-size:14px;margin-bottom:6px">Enter your family's passcode to see and update your side of the list.</p>
     <form id="passForm">
       <label for="pass">Passcode</label>
-      <input id="pass" type="password" autocomplete="current-password" required>
+      <input id="pass" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" required>
       <label for="who">Your name <small>(shown as "sent by")</small></label>
       <input id="who" type="text" placeholder="e.g. Prashant" autocomplete="name" required>
-      <div class="modal__foot"><button class="btn" type="submit">Open the list</button></div>
+      <div class="modal__foot"><button class="btn" type="submit" id="passBtn">Open the list</button></div>
       <p class="g__note" id="passErr" hidden style="color:#B0303A;margin-top:8px">That passcode didn't work. Please try again.</p>
     </form>
   </div>
@@ -266,12 +266,14 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
   };
   const SIDE = { groom: "Groom's side", bride: "Bride's side" };
   let W = {}, SHEET = "", rows = [], mode = "", editing = null;
+  // the passcode is kept in memory as well, so it still works where a browser blocks saving it
+  let PASS = store.get("gl-pass", "") || "";
 
   /* ---------- storage: the shared Google Sheet, or this phone only ---------- */
   const api = {
     async call(body) {
       setSync("busy", "Saving…");
-      const r = await fetch(SHEET, { method: "POST", body: JSON.stringify({ ...body, passcode: store.get("gl-pass", "") }) });
+      const r = await fetch(SHEET, { method: "POST", body: JSON.stringify({ ...body, passcode: PASS }) });
       const j = await r.json();
       if (!j.ok) { setSync("err", j.error === "passcode" ? "Wrong passcode" : "Not saved"); throw new Error(j.error || "failed"); }
       setSync("ok", "Saved to the shared list");
@@ -388,7 +390,7 @@ Upadhyay & Choudhary families`;
 
   async function reload(quiet) {
     try { rows = await api.list(); render(); }
-    catch (e) { if (String(e.message) === "passcode") showLock(true); else if (!quiet) toast("Couldn't load the list. Check the internet and try Refresh."); }
+    catch (e) { if (String(e.message) === "passcode") { PASS = ""; store.set("gl-pass", null); showLock(true); } else if (!quiet) toast("Couldn't load the list. Check the internet and try Refresh."); }
   }
   async function saveRow(g, msg) {
     const i = rows.findIndex((x) => x.ID === g.ID);
@@ -483,7 +485,7 @@ Upadhyay & Choudhary families`;
   $("#resetMsg").addEventListener("click", () => { store.set("gl-msg", null); msgBox.value = defaultMsg(); render(); });
   $("#refresh").addEventListener("click", () => reload());
   // log out: forget the passcode on this phone (the name is remembered to save typing next time)
-  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); rows = []; render(); setRole("all"); $("#pass").value = ""; showLock(); toast("Logged out"); });
+  $("#logout").addEventListener("click", () => { store.set("gl-pass", null); PASS = ""; rows = []; render(); setRole("all"); $("#pass").value = ""; showLock(); toast("Logged out"); });
   $("#csv").addEventListener("click", () => {
     const cols = ["Name", "Side", "Greeting", "Phones", "City", "Guests", "Notes", "Sent", "Sent To", "Sent On", "Sent By", "Times Opened", "Last Opened", "Last Song", "Link"];
     const out = [cols, ...rows.map((g) => cols.map((c) => c === "Link" ? linkFor(g) : c === "Side" ? SIDE[g.Side] || g.Side : g[c] ?? ""))];
@@ -511,17 +513,34 @@ Upadhyay & Choudhary families`;
     $("#passErr").hidden = !wrong;
     $("#who").value = store.get("gl-who", "");
   }
-  async function start() {
+  async function start(loaded) {
     $("#lock").hidden = true; $("#app").hidden = false;
     if (ROLE === "all") $("#sideSel").value = store.get("gl-view#sideSel", ""); $("#filter").value = store.get("gl-view#filter", "");
     setSync(mode === "local" ? "" : "busy", mode === "local" ? "Saved on this phone only" : "Loading…");
-    await reload();
+    if (loaded) { render(); setSync("ok", "Shared list · up to date"); } else await reload();
     offerImport();
   }
-  $("#passForm").addEventListener("submit", (e) => {
+  // check the passcode with the sheet BEFORE opening the list (so a wrong one never looks like it worked).
+  // Phone keyboards sometimes add a capital first letter, so "Upadhyay2026" is also tried as "upadhyay2026".
+  $("#passForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    store.set("gl-pass", $("#pass").value.trim()); store.set("gl-who", $("#who").value.trim());
-    mode = "sheet"; start();
+    const typed = $("#pass").value.trim(), btn = $("#passBtn");
+    store.set("gl-who", $("#who").value.trim());
+    btn.disabled = true; btn.textContent = "Checking…"; $("#passErr").hidden = true;
+    let ok = null;
+    for (const cand of [...new Set([typed, typed.toLowerCase()])]) {
+      try {
+        const j = await fetch(SHEET, { method: "POST", body: JSON.stringify({ action: "list", passcode: cand }) }).then((r) => r.json());
+        if (j.ok) { ok = { cand, j }; break; }
+        if (j.error !== "passcode") break;
+      } catch (err) { ok = false; break; }
+    }
+    btn.disabled = false; btn.textContent = "Open the list";
+    if (ok === false) return toast("No internet connection? Please try again.");
+    if (!ok) { $("#passErr").hidden = false; return; }
+    PASS = ok.cand; store.set("gl-pass", PASS);
+    mode = "sheet"; setRole(ok.j.role || "all"); rows = ok.j.rows || [];
+    start(true);
   });
   $("#useLocal").addEventListener("click", () => {
     if (!store.get("gl-who", "")) store.set("gl-who", prompt("Your name (shown as “sent by”)") || "");
@@ -536,7 +555,7 @@ Upadhyay & Choudhary families`;
     if (W.g) { $("#names").innerHTML = `${esc(W.g)} <i>&amp;</i> ${esc(W.b)}`; document.title = `Guest List · ${W.g} & ${W.b}`; }
     SHEET = (w.guestSheet && w.guestSheet.url) || "";
     msgBox.value = store.get("gl-msg", null) || store.get("send-msg", null) || defaultMsg();
-    if (SHEET && store.get("gl-pass", "")) { mode = "sheet"; start(); } else showLock();
+    if (SHEET && PASS) { mode = "sheet"; start(); } else showLock();
   });
 })();
 </script>
