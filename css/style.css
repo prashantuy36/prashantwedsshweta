@@ -1031,3 +1031,26 @@ body { font-size: clamp(14.5px, .45vw + 12.5px, 17px); line-height: 1.6; }
 @keyframes softhop { 0% { transform: translateY(0); } 45% { transform: translateY(-7px); } 100% { transform: translateY(0); } }
 .stamp.reveal { filter: blur(4px) drop-shadow(0 10px 14px rgba(90,40,30,.22)); }
 .stamp.reveal.in { filter: drop-shadow(0 10px 14px rgba(90,40,30,.22)); }
+
+/* =====================================================================
+   SVG MANDAP (replaces the 3D one): one connected structure, light on phones
+   ===================================================================== */
+.mandap3d svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.mandap3d .md-fire, .mandap3d .md-ember, .mandap3d .md-swing, .mandap3d .md-sway, .mandap3d .md-sway-slow, .mandap3d .md-diya, .mandap3d .md-drape, .mandap3d .md-aura { animation-play-state: paused; }
+.mandap3d.live .md-fire, .mandap3d.live .md-ember, .mandap3d.live .md-swing, .mandap3d.live .md-sway, .mandap3d.live .md-sway-slow, .mandap3d.live .md-diya, .mandap3d.live .md-drape, .mandap3d.live .md-aura { animation-play-state: running; }
+.md-fire { animation: mdFlicker .9s ease-in-out infinite alternate; transform-box: view-box; }
+@keyframes mdFlicker { 0% { transform: scale(1, 1); } 40% { transform: scale(.94, 1.08) skewX(-2deg); } 100% { transform: scale(1.04, .95) skewX(2deg); } }
+.md-ember { animation: mdEmber 3.2s linear infinite; animation-delay: var(--d); opacity: 0; transform-box: view-box; }
+@keyframes mdEmber { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: .9; } 100% { transform: translate(var(--x), -150px); opacity: 0; } }
+.md-swing { animation: mdSwing 3.6s ease-in-out infinite alternate; animation-delay: var(--d); transform-box: view-box; }
+@keyframes mdSwing { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
+.md-sway { animation: mdSway 5s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 300px 160px; }
+.md-sway-slow { animation: mdSway 7s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 300px 176px; }
+@keyframes mdSway { from { transform: translateY(0); } to { transform: translateY(3px); } }
+.md-drape { animation: mdDrape 6s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 300px 160px; }
+@keyframes mdDrape { from { transform: skewX(-.6deg); } to { transform: skewX(.6deg); } }
+.md-diya { animation: mdDiya 1.6s ease-in-out infinite alternate; animation-delay: var(--d); }
+@keyframes mdDiya { from { opacity: .82; } to { opacity: 1; } }
+.md-aura { animation: mdAura 2.4s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 300px 330px; }
+@keyframes mdAura { from { opacity: .7; transform: scale(.97); } to { opacity: 1; transform: scale(1.03); } }
+@media (prefers-reduced-motion: reduce) { .mandap3d * { animation: none !important; } }

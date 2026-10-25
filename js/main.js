@@ -314,7 +314,6 @@
         clearTimeout(mandapTimer);
         if (i === N - 1) mandapTimer = setTimeout(() => mandap.setActive(true), PHONE ? 120 : 0);   // already prepared a scene early; it then fades in gently
         else mandap.setActive(false);
-        if (i === N - 2) mandap.warm();      // get the 3D mandap ready one scene early
       }
       if (typeof fitScenes === "function") requestAnimationFrame(() => fitScenes());
       // the couple changes pose with each scene, with a little hop
@@ -543,8 +542,6 @@
     function open(instant) {
       if (!instant) toTop();
       document.body.classList.remove("locked");
-      // draw the 3D mandap once in the background so it doesn't stutter when the save-the-date scene arrives
-      if (mandap) setTimeout(() => { try { mandap.warm(); } catch (e) {} }, instant ? 600 : 2400);
       if (instant || reduce) { opening.classList.add("gone"); return; }
       opening.classList.add("open");
       // the first page's writing and the couple appear softly as the clouds part

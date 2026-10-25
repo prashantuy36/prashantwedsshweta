@@ -1,138 +1,142 @@
-/* V6 · The 3D mandap from V5, rendered on a transparent canvas so it stands inside
-   V2's painted dusk scene. It turns slowly, the havan fire flickers and embers rise. */
+/* The mandap on the save-the-date page, drawn in SVG (light and smooth on every phone).
+   Four gold pillars stand on one platform and are joined at the top by a carved frame under a
+   rose-red dome, so the whole structure reads as one piece. Inside: two seats and the havan fire.
+   Marigold strings, jasmine swags and sheer drapes hang from the frame; diyas line the platform.
+   Gentle CSS animations (in style.css): fire flicker, rising embers, swaying garlands, glowing diyas. */
 window.Mandap = (function () {
   "use strict";
-  function supported() {
-    try { const c = document.createElement("canvas"); return !!(window.THREE && (c.getContext("webgl2") || c.getContext("webgl"))); }
-    catch (e) { return false; }
+  const f = (n) => Math.round(n * 10) / 10;
+
+  // a gold pillar: lotus base, banded shaft, carved capital
+  function pillar(x, yTop, yBase, w, back) {
+    const g = back ? "url(#mdGoldBack)" : "url(#mdGold)";
+    let bands = "";
+    for (let y = yTop + 26; y < yBase - 24; y += 30) bands += `<rect x="${f(x - w * .62)}" y="${f(y)}" width="${f(w * 1.24)}" height="${f(w * .32)}" rx="${f(w * .16)}" fill="${back ? "#8F6A2A" : "#B98A2E"}"/>`;
+    return `<g class="md-pillar">
+      <path d="M${f(x - w * 1.1)} ${yBase} q${f(w * 1.1)} ${f(-w * 1.3)} ${f(w * 2.2)} 0 z" fill="${g}"/>
+      <rect x="${f(x - w / 2)}" y="${yTop}" width="${w}" height="${yBase - yTop}" rx="${f(w * .25)}" fill="${g}"/>
+      <rect x="${f(x - w * .18)}" y="${yTop + 6}" width="${f(w * .14)}" height="${yBase - yTop - 12}" fill="#FFF3C4" opacity="${back ? .18 : .45}"/>
+      ${bands}
+      <path d="M${f(x - w)} ${yTop + 2} h${f(w * 2)} l${f(-w * .3)} 12 h${f(-w * 1.4)} z" fill="${g}"/>
+    </g>`;
   }
-  function create(canvas) {
-    if (!supported()) return null;
-    const T = THREE, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const phone = matchMedia("(hover: none) and (pointer: coarse)").matches || innerWidth <= 760;
-    const renderer = new T.WebGLRenderer({ canvas, antialias: !phone, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, phone ? 1.5 : 2));
-    renderer.outputEncoding = T.sRGBEncoding;
-    renderer.toneMapping = T.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
-    renderer.setClearColor(0x000000, 0);
-    const scene = new T.Scene();
-    const camera = new T.PerspectiveCamera(34, 1, .1, 100);
-    const m4 = new T.Matrix4();
+  // a hanging string of marigolds (orange/yellow), ending in a small bell
+  function marigolds(x, y0, n, i) {
+    let o = `<g class="md-swing" style="--d:${(i % 5) * -0.7}s;transform-origin:${x}px ${y0}px">`;
+    for (let k = 0; k < n; k++) o += `<circle cx="${x}" cy="${f(y0 + 6 + k * 9)}" r="4.6" fill="${k % 3 === 2 ? "#E8546E" : k % 2 ? "#FFC21C" : "#F7930F"}"/>`;
+    return o + `<path d="M${x - 4} ${f(y0 + 6 + n * 9)} q4 -7 8 0 z" fill="#E2B04A"/></g>`;
+  }
+  // a jasmine swag between two points
+  function swag(x1, x2, y, sag, cls) {
+    let o = "";
+    const n = Math.round((x2 - x1) / 7);
+    for (let k = 0; k <= n; k++) {
+      const t = k / n, x = x1 + (x2 - x1) * t, yy = y + 4 * sag * t * (1 - t);
+      o += `<ellipse cx="${f(x)}" cy="${f(yy)}" rx="3.4" ry="2.5" fill="#FFFDF4" stroke="#E6D7B8" stroke-width=".6"/>`;
+      if (k % 4 === 2) o += `<circle cx="${f(x)}" cy="${f(yy + 1)}" r="3.4" fill="#E87A92"/>`;
+    }
+    return `<g class="${cls || ""}">${o}</g>`;
+  }
+  function kalash(x, y, s) {
+    return `<g transform="translate(${x} ${y}) scale(${s})">
+      <path d="M-14 0 q-6 -16 4 -26 h20 q10 10 4 26 z" fill="url(#mdGold)"/>
+      <rect x="-9" y="-30" width="18" height="6" rx="2" fill="#C8455E"/>
+      <ellipse cx="0" cy="-36" rx="8" ry="9" fill="#7A4A22"/>
+      <path d="M-4 -40 q-14 -6 -18 -16 q12 2 18 12 M4 -40 q14 -6 18 -16 q-12 2 -18 12" fill="#5E9A43"/>
+    </g>`;
+  }
 
-    function glowTex() {
-      const c = document.createElement("canvas"); c.width = c.height = 128;
-      const g = c.getContext("2d"), r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-      r.addColorStop(0, "rgba(255,236,190,1)"); r.addColorStop(.25, "rgba(255,236,190,1)"); r.addColorStop(1, "rgba(255,170,60,0)");
-      g.fillStyle = r; g.fillRect(0, 0, 128, 128);
-      const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
+  function svg() {
+    // geometry (viewBox 600 × 500): back pillars stand further away, so they are thinner and higher on the platform
+    const BX = [168, 432], FX = [92, 508], BTOP = 170, FTOP = 150, BBASE = 372, FBASE = 418;
+    let strings = "";
+    [[FX[0] + 30, 6], [150, 9], [200, 7], [250, 10], [300, 6], [350, 10], [400, 7], [450, 9], [FX[1] - 30, 6]].forEach(([x, n], i) => (strings += marigolds(x, FTOP + 12, n, i)));
+    let diyas = "";
+    for (let k = 0; k < 9; k++) {
+      const x = 70 + k * 57.5;
+      diyas += `<g class="md-diya" style="--d:${(k % 4) * -.45}s"><circle cx="${f(x)}" cy="449" r="15" fill="url(#mdGlow)"/>
+        <path d="M${f(x - 9)} 452 q9 9 18 0 z" fill="#C98A2E"/><path d="M${f(x)} 451 q-3.5 -5 0 -11 q3.5 6 0 11 z" fill="#FFD27A"/></g>`;
     }
-    const GLOW = glowTex();
-    const gold = new T.MeshStandardMaterial({ color: 0xd4a54a, metalness: .85, roughness: .32, emissive: 0x3a2206, emissiveIntensity: .7 });
-    const ivory = new T.MeshStandardMaterial({ color: 0xf3e6cc, roughness: .6 });
-    const brass = new T.MeshStandardMaterial({ color: 0xc9902e, metalness: .8, roughness: .35, emissive: 0x2a1604 });
-    const tone = (hex) => new T.MeshStandardMaterial({ color: new T.Color(hex), roughness: .55, emissive: new T.Color(hex).multiplyScalar(.25) });
-    const lathe = (pts, mat) => new T.Mesh(new T.LatheGeometry(pts.map(([x, y]) => new T.Vector2(x, y)), 32), mat);
-    const leafShape = new T.Shape(); leafShape.moveTo(0, 0); leafShape.quadraticCurveTo(.09, .18, 0, .42); leafShape.quadraticCurveTo(-.09, .18, 0, 0);
-    const leafMat = new T.MeshStandardMaterial({ color: 0x4f8a35, roughness: .6, side: T.DoubleSide, emissive: 0x0d2208 });
-    function kalash(s) {
-      const g = new T.Group();
-      g.add(lathe([[0, 0], [.16, 0], [.26, .1], [.3, .26], [.24, .42], [.12, .5], [.11, .56], [.17, .6], [0, .6]], brass));
-      const band = new T.Mesh(new T.TorusGeometry(.115, .02, 8, 24), tone("#C41E2A")); band.rotation.x = Math.PI / 2; band.position.y = .53; g.add(band);
-      const nut = new T.Mesh(new T.SphereGeometry(.13, 16, 12), new T.MeshStandardMaterial({ color: 0x7a4a22, roughness: .9 })); nut.scale.y = 1.2; nut.position.y = .74; g.add(nut);
-      for (let i = 0; i < 7; i++) { const l = new T.Mesh(new T.ShapeGeometry(leafShape), leafMat); l.position.y = .6; l.rotation.set(0, i * .9, -.9 + (i % 2) * .15); g.add(l); }
-      g.scale.setScalar(s); return g;
-    }
+    let embers = "";
+    for (let k = 0; k < 8; k++) embers += `<circle class="md-ember" cx="${300 + ((k * 13) % 26) - 13}" cy="352" r="${1.6 + (k % 3) * .6}" fill="#FFD27A" style="--d:${k * -.45}s;--x:${((k * 7) % 14) - 7}px"/>`;
 
-    const root = new T.Group(); scene.add(root);
-    const mg = [];
-    const H = 4.6, R = 3.3;
-    // platform with steps
-    const plat = new T.Mesh(new T.CylinderGeometry(4.2, 4.5, .45, 8), ivory); plat.position.y = .22; root.add(plat);
-    const step = new T.Mesh(new T.CylinderGeometry(4.7, 4.9, .2, 8), ivory); step.position.y = .1; root.add(step);
-    const rim = new T.Mesh(new T.TorusGeometry(4.25, .06, 8, 8), gold); rim.rotation.x = Math.PI / 2; rim.rotation.z = Math.PI / 8; rim.position.y = .45; root.add(rim);
-    // rangoli on the floor
-    const rang = new T.Mesh(new T.RingGeometry(1.2, 1.9, 48), new T.MeshStandardMaterial({ color: 0xd7577a, roughness: .7, emissive: 0x3a0612 }));
-    rang.rotation.x = -Math.PI / 2; rang.position.y = .46; root.add(rang);
-    const rang2 = new T.Mesh(new T.RingGeometry(.7, 1.15, 48), new T.MeshStandardMaterial({ color: 0xffb21c, roughness: .7, emissive: 0x3a2206 }));
-    rang2.rotation.x = -Math.PI / 2; rang2.position.y = .465; root.add(rang2);
-    [[-R, -R], [R, -R], [-R, R], [R, R]].forEach(([x, z]) => {
-      const p = new T.Mesh(new T.CylinderGeometry(.16, .2, H, 16), gold); p.position.set(x, .45 + H / 2, z); root.add(p);
-      for (let k = 0; k < 5; k++) { const r = new T.Mesh(new T.TorusGeometry(.2, .05, 8, 16), gold); r.rotation.x = Math.PI / 2; r.position.set(x, .9 + k * .9, z); root.add(r); }
-      const kk = kalash(.9); kk.position.set(x * .78, .45, z * .78); root.add(kk);
-    });
-    const dome = new T.Mesh(new T.SphereGeometry(3.4, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), new T.MeshStandardMaterial({ color: 0x9e1b32, roughness: .5, emissive: 0x3a0612, side: T.DoubleSide }));
-    dome.scale.y = .55; dome.position.y = .45 + H; root.add(dome);
-    const top = new T.Mesh(new T.ConeGeometry(.3, 1, 16), gold); top.position.y = .45 + H + 2.2; root.add(top);
-    const band = new T.Mesh(new T.TorusGeometry(3.4, .1, 8, 48), gold); band.rotation.x = Math.PI / 2; band.position.y = .45 + H; root.add(band);
-    [-.75, .75].forEach((x) => {
-      const seat = new T.Mesh(new T.BoxGeometry(1, .5, .8), tone("#B8325A")); seat.position.set(x, .7, -.9); root.add(seat);
-      const back = new T.Mesh(new T.BoxGeometry(1, 1, .12), gold); back.position.set(x, 1.2, -1.28); root.add(back);
-    });
-    for (let a = 0; a < Math.PI * 2; a += .26) { const n = 6 + (Math.round(a * 10) % 3) * 2; for (let k = 0; k < n; k++) mg.push([Math.cos(a) * 3.3, .45 + H - .1 - k * .16, Math.sin(a) * 3.3, k]); }
-    {
-      const im = new T.InstancedMesh(new T.SphereGeometry(.075, 10, 8), new T.MeshStandardMaterial({ roughness: .8, emissive: 0x401400, emissiveIntensity: .5 }), mg.length);
-      const cA = new T.Color(0xf7930f), cB = new T.Color(0xffc21c), cR = new T.Color(0xd7577a);
-      mg.forEach(([x, y, z, k], i) => { m4.makeTranslation(x, y, z); im.setMatrixAt(i, m4); im.setColorAt(i, k % 7 === 6 ? cR : k % 2 ? cB : cA); });
-      root.add(im);
-    }
-    // havan kund + fire + embers
-    const kund = new T.Mesh(new T.BoxGeometry(.9, .35, .9), new T.MeshStandardMaterial({ color: 0x8a5a2b, roughness: .8 })); kund.position.set(0, .62, 1.2); root.add(kund);
-    const fire = new T.Sprite(new T.SpriteMaterial({ map: GLOW, color: 0xff9a3c, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
-    fire.scale.set(1.2, 1.7, 1); fire.position.set(0, 1.25, 1.2); root.add(fire);
-    const EN = 60, ep = new Float32Array(EN * 3), ev = [];
-    for (let i = 0; i < EN; i++) { ep.set([(Math.random() - .5) * .4, .9 + Math.random() * 3, 1.2 + (Math.random() - .5) * .4], i * 3); ev.push(.008 + Math.random() * .014); }
-    const eGeo = new T.BufferGeometry(); eGeo.setAttribute("position", new T.BufferAttribute(ep, 3));
-    root.add(new T.Points(eGeo, new T.PointsMaterial({ size: .12, map: GLOW, color: 0xffb347, transparent: true, depthWrite: false, blending: T.AdditiveBlending })));
-    // diyas around the platform
-    const dp = [];
-    for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) dp.push([Math.cos(a) * 4.55, .26, Math.sin(a) * 4.55]);
-    dp.forEach(([x, y, z]) => { const d = new T.Mesh(new T.CylinderGeometry(.12, .06, .08, 10), brass); d.position.set(x, y - .05, z); root.add(d); });
-    const dGeo = new T.BufferGeometry(); dGeo.setAttribute("position", new T.BufferAttribute(new Float32Array(dp.flatMap(([x, y, z]) => [x, y + .14, z])), 3));
-    const dMat = new T.PointsMaterial({ size: .5, map: GLOW, color: 0xffb347, transparent: true, depthWrite: false, blending: T.AdditiveBlending });
-    root.add(new T.Points(dGeo, dMat));
+    return `<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Wedding mandap">
+    <defs>
+      <linearGradient id="mdGold" x1="0" x2="1"><stop offset="0" stop-color="#9C6E1E"/><stop offset=".45" stop-color="#F3CF72"/><stop offset=".7" stop-color="#E0B04E"/><stop offset="1" stop-color="#8F6418"/></linearGradient>
+      <linearGradient id="mdGoldBack" x1="0" x2="1"><stop offset="0" stop-color="#6E4E18"/><stop offset=".5" stop-color="#B8913E"/><stop offset="1" stop-color="#6A4914"/></linearGradient>
+      <linearGradient id="mdDome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F28AA2"/><stop offset=".55" stop-color="#D2486A"/><stop offset="1" stop-color="#A8284A"/></linearGradient>
+      <linearGradient id="mdFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E8D2"/><stop offset="1" stop-color="#FFF8EC"/></linearGradient>
+      <linearGradient id="mdEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9D3B0"/><stop offset="1" stop-color="#C9AE84"/></linearGradient>
+      <linearGradient id="mdDrape" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4F0" stop-opacity=".95"/><stop offset="1" stop-color="#F7C9D2" stop-opacity=".75"/></linearGradient>
+      <radialGradient id="mdGlow"><stop offset="0" stop-color="#FFD27A" stop-opacity=".8"/><stop offset="1" stop-color="#FFB347" stop-opacity="0"/></radialGradient>
+      <radialGradient id="mdFireGlow" cx=".5" cy=".6"><stop offset="0" stop-color="#FFC46B" stop-opacity=".75"/><stop offset=".5" stop-color="#FF9A3C" stop-opacity=".25"/><stop offset="1" stop-color="#FF9A3C" stop-opacity="0"/></radialGradient>
+      <radialGradient id="mdFlame" cx=".5" cy=".85" r=".8"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".45" stop-color="#FFC23C"/><stop offset="1" stop-color="#F0602A"/></radialGradient>
+    </defs>
 
-    scene.add(new T.HemisphereLight(0xffd9b0, 0x2a1240, .75));
-    const key = new T.DirectionalLight(0xffc89a, .9); key.position.set(6, 10, 8); scene.add(key);
-    const fl = new T.PointLight(0xffa860, 3, 14, 2); fl.position.set(0, 2.2, 2.5); scene.add(fl);
-    const bl = new T.PointLight(0xff7aa0, 2, 12, 2); bl.position.set(0, 3, -2.5); scene.add(bl);
+    <ellipse cx="300" cy="478" rx="290" ry="18" fill="#1a0a14" opacity=".25"/>
+    <circle class="md-aura" cx="300" cy="330" r="230" fill="url(#mdFireGlow)"/>
 
-    let active = false, raf = 0, t0 = performance.now(), lastW = 0, lastH = 0, lastFrame = 0, warmed = false;
-    function size() {   // only resize when the canvas really changed size (resizing re-creates the drawing buffer and stutters)
-      const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h || (w === lastW && h === lastH)) return;
-      lastW = w; lastH = h;
-      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-    }
-    addEventListener("resize", size);
-    function draw() {
-      const t = (performance.now() - t0) / 1000;
-      const a = reduce ? .5 : .5 + t * .16;
-      const dist = camera.aspect < 1.1 ? 17.5 : 15;
-      camera.position.set(Math.sin(a) * dist, 4.6, Math.cos(a) * dist);
-      camera.lookAt(0, 3.1, 0);
-      if (!reduce) {
-        fire.scale.y = 1.6 + Math.sin(t * 9) * .15; fire.material.opacity = .85 + Math.sin(t * 13) * .1;
-        dMat.size = .5 + Math.sin(t * 11) * .04;
-        const arr = eGeo.attributes.position.array;
-        for (let i = 0; i < EN; i++) { arr[i * 3 + 1] += ev[i]; arr[i * 3] += Math.sin(t * 2 + i) * .002; if (arr[i * 3 + 1] > 4.5) { arr[i * 3 + 1] = .9; arr[i * 3] = (Math.random() - .5) * .4; } }
-        eGeo.attributes.position.needsUpdate = true;
-      }
-      renderer.render(scene, camera);
-    }
-    function loop(t) {
-      if (!active) return;
-      raf = requestAnimationFrame(loop);
-      if (phone && t - lastFrame < 31) return;   // ~30 fps on phones keeps scrolling smooth
-      lastFrame = t; draw();
-    }
+    <!-- platform: top floor with rangoli, front edge and two steps -->
+    <path d="M150 366 H450 L560 426 H40 Z" fill="url(#mdFloor)"/>
+    <ellipse cx="300" cy="398" rx="120" ry="20" fill="none" stroke="#E87A92" stroke-width="5" opacity=".75"/>
+    <ellipse cx="300" cy="398" rx="88" ry="14" fill="none" stroke="#F7B731" stroke-width="4" stroke-dasharray="7 6" opacity=".9"/>
+    <path d="M40 426 H560 V448 H40 Z" fill="url(#mdEdge)"/>
+    <path d="M40 426 H560" stroke="#C99A3E" stroke-width="3"/>
+    <path d="M40 448 H560" stroke="#B98A2E" stroke-width="2" opacity=".7"/>
+    <path d="M220 448 H380 V460 H220 Z M200 460 H400 V472 H200 Z" fill="url(#mdEdge)" stroke="#C99A3E" stroke-width="1.2"/>
+
+    <!-- back pillars and the back beam (behind everything inside) -->
+    ${pillar(BX[0], BTOP, BBASE, 13, true)}${pillar(BX[1], BTOP, BBASE, 13, true)}
+    <rect x="${BX[0] - 10}" y="${BTOP - 12}" width="${BX[1] - BX[0] + 20}" height="14" rx="4" fill="url(#mdGoldBack)"/>
+    ${swag(BX[0], BX[1], BTOP + 6, 26, "md-sway-slow")}
+
+    <!-- inside: two seats and the havan kund with its fire -->
+    <g><rect x="220" y="350" width="46" height="28" rx="6" fill="#C2185B"/><rect x="216" y="330" width="54" height="24" rx="8" fill="url(#mdGold)"/>
+       <rect x="334" y="350" width="46" height="28" rx="6" fill="#C2185B"/><rect x="330" y="330" width="54" height="24" rx="8" fill="url(#mdGold)"/></g>
+    <g>
+      <path d="M272 392 H328 L322 412 H278 Z" fill="#9A5A2B"/><path d="M268 386 H332 V394 H268 Z" fill="#B87333"/>
+      <g class="md-fire" style="transform-origin:300px 388px">
+        <path d="M300 388 C282 380 286 360 296 348 C296 360 304 362 302 350 C312 360 318 376 300 388 Z" fill="url(#mdFlame)"/>
+        <path d="M300 388 C292 382 294 372 300 364 C304 374 308 380 300 388 Z" fill="#FFF6C8" opacity=".9"/>
+      </g>
+      ${embers}
+    </g>
+
+    <!-- front pillars, side beams joining front to back, and the front beam: one connected frame -->
+    <path d="M${FX[0]} ${FTOP - 4} L${BX[0]} ${BTOP - 10} L${BX[0]} ${BTOP + 2} L${FX[0]} ${FTOP + 12} Z" fill="url(#mdGoldBack)"/>
+    <path d="M${FX[1]} ${FTOP - 4} L${BX[1]} ${BTOP - 10} L${BX[1]} ${BTOP + 2} L${FX[1]} ${FTOP + 12} Z" fill="url(#mdGoldBack)"/>
+    ${pillar(FX[0], FTOP, FBASE, 20, false)}${pillar(FX[1], FTOP, FBASE, 20, false)}
+    ${kalash(FX[0] + 34, 424, .7)}${kalash(FX[1] - 34, 424, .7)}
+
+    <!-- sheer drapes tied back to the front pillars -->
+    <g class="md-drape"><path d="M${FX[0] + 8} ${FTOP + 10} C170 200 150 260 ${FX[0] + 14} 330 L${FX[0] + 8} 330 Z" fill="url(#mdDrape)"/>
+      <path d="M${FX[1] - 8} ${FTOP + 10} C430 200 450 260 ${FX[1] - 14} 330 L${FX[1] - 8} 330 Z" fill="url(#mdDrape)"/></g>
+    <circle cx="${FX[0] + 12}" cy="300" r="5" fill="#E8546E"/><circle cx="${FX[1] - 12}" cy="300" r="5" fill="#E8546E"/>
+
+    <!-- front beam with carving, marigold strings and a jasmine swag -->
+    <rect x="${FX[0] - 18}" y="${FTOP - 16}" width="${FX[1] - FX[0] + 36}" height="22" rx="6" fill="url(#mdGold)"/>
+    <path d="M${FX[0] - 10} ${FTOP - 5} H${FX[1] + 10}" stroke="#9C6E1E" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/>
+    ${strings}
+    ${swag(FX[0] + 10, FX[1] - 10, FTOP + 10, 34, "md-sway")}
+
+    <!-- dome (chhatri) resting on the front beam, with gold ribs and a kalash on top -->
+    <path d="M${FX[0] - 26} ${FTOP - 14} C${FX[0] - 6} 70 210 34 300 30 C390 34 ${FX[1] + 6} 70 ${FX[1] + 26} ${FTOP - 14} Z" fill="url(#mdDome)"/>
+    <path d="M300 30 V${FTOP - 14} M230 44 C200 80 190 110 185 ${FTOP - 14} M370 44 C400 80 410 110 415 ${FTOP - 14} M160 72 C140 96 128 118 122 ${FTOP - 14} M440 72 C460 96 472 118 478 ${FTOP - 14}" stroke="#F1D184" stroke-width="2.4" fill="none" opacity=".85"/>
+    <path d="M${FX[0] - 26} ${FTOP - 14} H${FX[1] + 26}" stroke="#F1D184" stroke-width="5" stroke-linecap="round"/>
+    <path d="M${FX[0] - 22} ${FTOP - 10} q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0 q14 14 28 0" fill="none" stroke="#F1D184" stroke-width="2" opacity=".8"/>
+    ${kalash(300, 32, .9)}
+
+    ${diyas}
+    </svg>`;
+  }
+
+  function create(el) {
+    if (!el) return null;
+    el.innerHTML = svg();
     return {
-      setActive(on) {
-        if (on === active) return; active = on;
-        if (on) { size(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); } else cancelAnimationFrame(raf);
-      },
-      draw() { size(); draw(); },
-      warm() { if (warmed) return; warmed = true; size(); draw(); if (renderer.compile) renderer.compile(scene, camera); }
+      setActive(on) { el.classList.toggle("live", !!on); },   // animations run only while the mandap is on screen
+      warm() {}, draw() {}
     };
   }
-  return { create, supported };
+  return { create, svg, supported: () => true };
 })();
