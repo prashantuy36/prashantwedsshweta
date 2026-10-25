@@ -186,6 +186,19 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
       <p class="g__note" style="margin-top:8px">They'll see “Dear Sharma Family” when they open it. The name is hidden inside the link.</p>
     </section>
 
+    <section class="card">
+      <details>
+        <summary>WhatsApp message</summary>
+        <textarea id="msg" style="margin-top:8px;min-height:170px"></textarea>
+        <p class="tokens"><code>{name}</code> = family name, <code>{link}</code> = their personal link. <button type="button" class="x" id="resetMsg" style="font-size:13px;text-decoration:underline">Reset</button></p>
+      </details>
+      <div class="g__actions" style="margin-top:12px">
+        <button class="btn ghost small" type="button" id="refresh">Refresh list</button>
+        <button class="btn ghost small" type="button" id="csv">Download (CSV)</button>
+        <button class="btn ghost small" type="button" id="logout">Log out</button>
+      </div>
+    </section>
+
     <div class="toolbar">
       <input type="text" id="q" placeholder="Search name, city or number…" aria-label="Search">
       <select id="filter" aria-label="Show" hidden>
@@ -209,18 +222,6 @@ details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var
       <div id="list"></div>
     </section>
 
-    <section class="card">
-      <details>
-        <summary>WhatsApp message</summary>
-        <textarea id="msg" style="margin-top:8px;min-height:170px"></textarea>
-        <p class="tokens"><code>{name}</code> = family name, <code>{link}</code> = their personal link. <button type="button" class="x" id="resetMsg" style="font-size:13px;text-decoration:underline">Reset</button></p>
-      </details>
-      <div class="g__actions" style="margin-top:12px">
-        <button class="btn ghost small" type="button" id="refresh">Refresh list</button>
-        <button class="btn ghost small" type="button" id="csv">Download (CSV)</button>
-        <button class="btn ghost small" type="button" id="logout">Log out</button>
-      </div>
-    </section>
     <p class="foot">Only for the two families: not linked from the invitation, and hidden from search engines.</p>
   </div>
 </div>
